@@ -6,15 +6,15 @@ from streamlit_extras.colored_header import colored_header
 from streamlit_extras.switch_page_button import switch_page
 
 
-df = pd.read_csv("data/train3.csv")
-df2 = pd.read_csv("data/data_entry_train.csv")
+df = pd.read_csv("data\\train3.csv")
+df2 = pd.read_csv("data\\data_entry_train.csv")
 
 #def main():
 #Loading the model
 st.set_page_config(initial_sidebar_state = "collapsed", layout = "wide")
-pickle_in = open('models\predictor.pkl', 'rb')
+pickle_in = open('models\\predictor.pkl', 'rb')
 cat_model = pickle.load(pickle_in)
-st.columns(3)[1].image("images\header.png",use_column_width="auto")
+st.columns(3)[1].image("images\\header.png",use_column_width="auto")
 #st.subheader('About your car: ')
 colored_header(
 label = "About your Car: ",
@@ -129,14 +129,3 @@ if(confirmation):
                 with st.spinner("Calculating price..."):
                         time.sleep(2)
                 switch_page("displayval")
-
-                '''if pred >= 1e7:
-                        pred = pred / 1e7
-                        colored_header(label = f"The predicted price is: ₹{round(pred, 2)} Cr",
-                                description = " ",
-                                color_name = 'red-70')
-                elif (pred > 1e5):
-                        pred = pred / 1e5 
-                        colored_header(label = f"The predicted price is: ₹{round(pred, 2)} Lakh",
-                                        description = " ",
-                                        color_name = 'red-70')'''

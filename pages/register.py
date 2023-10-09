@@ -27,7 +27,7 @@ authenticator = stauth.Authenticate(
     config['preauthorized']
 )
 
-st.columns(3)[1].image("images/header.png",use_column_width="auto")
+st.columns(3)[1].image("images\\header.png",use_column_width="auto")
 
 registered_successfully = False
 

@@ -23,7 +23,7 @@ if not authentication_status:
     switch_page("Login")
 
 
-st.columns(3)[1].image("images/header.png",use_column_width="auto")
+st.columns(3)[1].image("images\\header.png",use_column_width="auto")
 
 st.write(f'Welcome *{name}*')
 

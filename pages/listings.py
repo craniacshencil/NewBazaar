@@ -29,14 +29,14 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days'],
     config['preauthorized']
 )
-st.columns(3)[1].image("images/header.png",use_column_width="auto")
+st.columns(3)[1].image("images\\header.png",use_column_width="auto")
 
 #"---"
 
 col1, col2, col3, col4 = st.columns(4)
 
 #    st.write("hhh")
-df = pd.read_csv("pages/final_train.csv")
+df = pd.read_csv("data\\data_entry_train.csv")
 #st.dataframe(pd.DataFrame(df))
 #st.write(df.km.min())
 #st.write(df.km.max())
@@ -56,7 +56,7 @@ with col1:
 with col2:
     for i in range(0,2):
         with st.container():
-            st.image("images/car_placeholder.png")
+            st.image("images\\car_placeholder.png")
             st.write("This is inside the container")
             st.write("This is inside the container")
             st.write("This is inside the container")
@@ -65,7 +65,7 @@ with col2:
 with col3:
     for i in range(0,2):
         with st.container():
-            st.image("images/car_placeholder.png")
+            st.image("images\\car_placeholder.png")
             st.write("This is inside the container")
             st.write("This is inside the container")
             st.write("This is inside the container")
@@ -74,7 +74,7 @@ with col3:
 with col4:
     for i in range(0,2):
         with st.container():
-            st.image("images/car_placeholder.png")
+            st.image("images\\car_placeholder.png")
             st.write("This is inside the container")
             st.write("This is inside the container")
             st.write("This is inside the container")            
