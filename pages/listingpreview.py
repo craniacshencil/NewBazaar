@@ -1,11 +1,14 @@
 #library imports
 import streamlit as st
 import numpy as np
+import pandas as pd
 import time
 from PIL import Image
 from streamlit_extras.colored_header import colored_header
 from streamlit_extras.switch_page_button import switch_page
 from streamlit_carousel import carousel
+from streamlit_extras.stylable_container import stylable_container 
+from streamlit_extras.grid import grid
 import glob
 import os
 import shutil
@@ -30,7 +33,7 @@ color_name = "red-70",
 )
 
 #Generating carousel out of urls
-col1, col2 = st.columns([8, 5])
+col1, col2 = st.columns([2, 1], gap = "small")
 with col1:
     image_urls = st.session_state['imageurls']
     img_collection = []
@@ -40,46 +43,126 @@ with col1:
                     interval = None,
                     img = url)
         img_collection.append(item)
-        carousel(items = img_collection, width = 1)
+    carousel(items = img_collection, width = 1)
 
 #Converting values back
+price = st.session_state['Price']
 values = st.session_state['values']
 if values[5] == 0:
-        values[5] = "Manual"
+    values[5] = "Manual"
 else:
-        values[5] = "Automatic"
+    values[5] = "Automatic"
 
 if values[4] == 0:
-        values[4] = "LPG"
+    values[4] = "LPG"
 if values[4] == 1:
-        values[4] = "CNG"
+    values[4] = "CNG"
 if values[4] == 2:
-        values[4] = "Petrol"
+    values[4] = "Petrol"
 if values[4] == 3:
-        values[4] = "Diesel"
+    values[4] = "Diesel"
 if values[4] == 4:
-        values[4] = "Electric"
+    values[4] = "Electric"
 
 if values[6] == 1:
-      values[6] = "1st"
+    values[6] = "1st"
 if values[6] == 2:
-      values[6] = "2nd"
+    values[6] = "2nd"
 if values[6] == 3:
-      values[6] = "3rd"
+    values[6] = "3rd"
 if values[6] == 4:
-      values[6] = "4th"
+    values[6] = "4th"
 if values[6] == 5:
-      values[6] = "5th"
+    values[6] = "5th"
 else:
-      values[6] = "6th"
+    values[6] = "6th"
 
-#Adding important text
-
+#Basic Car Details
 with col2:
-    st.markdown(f"# {values[1]} {values[0].capitalize()} {values[2].capitalize()}")
-    st.markdown(f"## {values[3]} · {values[4]} · {values[5]}")
-    st.markdown(f"## {values[6]} owner · {values[7]} kms")
+    with stylable_container(
+        key="container_with_border",
+        css_styles="""
+            {
+                border: 2px solid rgba(60, 60, 60, 1);
+                border-radius: 1rem;
+                padding: calc(1em - 1px)
+            }
+            """,
+    ):
 
-st.write("yay! a Carousel")
+        st.markdown(f"##### {values[1]} {values[0].capitalize()} {values[2].capitalize()} {values[3]}")
+        st.markdown(f"###### {int(values[7] / 1e3)}k kms · {values[4]} · {values[5]} · {values[6]} owner ")
+        col1, col2, col3 = st.columns([1, 40, 1])
+        with col2:
+            st.divider()
+        col1, col2 = st.columns([1, 3])
+        with col2:
+            st.markdown(f"####  Price: ₹{price} Lakh")
+            # st.caption("(Fixed On-road price)")
+        col1, col2, col3 = st.columns([1, 40, 1])
+        with col2:
+            st.divider()
+        col0, col1, col2 = st.columns(3)
+        with col0:
+            wishlist = st.button("Wishlist", use_container_width = True)
+        with col2:
+            st.button("Calculate EMI", use_container_width = True)
+        with col1:
+            st.button("Book Now", type = "primary", use_container_width = True)
+if(wishlist):
+	st.success("Added to wishlist")
 #  values = [brand, yr, model, variant, fueltype
 #          , transmission, owner, kms]
+
+#Basic details of the car
+df = pd.read_csv("data\\data_entry_train.csv")
+df = df.loc[(df.model == values[2]) & (df.variant == values[3])]
+
+valve_config = df['Valve Configuration'].mode()[0]
+kerb_wt = df['Kerb Weight'].mode()[0]
+seats = df['Seats'].mode()[0]
+max_torque = df['Max Torque Delivered'].mode()[0]
+body = df['body'].mode()[0]
+gearbox = df['Gear Box'].mode()[0]
+steering_type = df['Steering Type'].mode()[0]
+F_brake = df['Front Brake Type'].mode()[0]
+R_brake = df['Rear Brake Type'].mode()[0]
+tyres = df['Tyre Type'].mode()[0]
+color = df['exterior_color'].mode()[0]
+tread = df['Tread'].mode()[0]
+st.write(df)
+with stylable_container(
+    key="container_with_border",
+    css_styles="""
+        {
+            border: 2px solid rgba(60, 60, 60, 1);
+            border-radius: 1rem;
+            padding: calc(1em - 1px)
+        }
+        """,
+):
+    st.subheader("General Features")
+    my_grid = grid(4, vertical_align="bottom")
+    # Row 1:
+    my_grid.text_input(label = "Body", value = body, disabled = True)
+    my_grid.markdown(f"##### Color:\t{color.capitalize()}")
+    my_grid.markdown(f"##### Seats:\t{str(seats)}")
+    my_grid.markdown(f"##### Max Torque:\t{int(max_torque)} Nm")
+    # Row 2:
+    my_grid.markdown(f"###### Body: {body.capitalize()}")
+    my_grid.markdown(f"###### Color: {color.capitalize()}")
+    my_grid.markdown(f"###### Seats: {str(seats)}")
+    my_grid.markdown(f"###### Max Torque: {int(max_torque)} Nm")
+    # Row 3:
+    my_grid.text_area("Your message", height=40)
+    # Row 4:
+    my_grid.button("Example 1", use_container_width=True)
+    my_grid.button("Example 2", use_container_width=True)
+    my_grid.button("Example 3", use_container_width=True)
+    my_grid.button("Example 4", use_container_width=True)
+    # Row 5 (uses the spec from row 1):
+    with my_grid.expander("Show Filters", expanded=True):
+        st.slider("Filter by Age", 0, 100, 50)
+        st.slider("Filter by Height", 0.0, 2.0, 1.0)
+        st.slider("Filter by Weight", 0.0, 100.0, 50.0)
+    my_grid.dataframe(random_df, use_container_width=True)

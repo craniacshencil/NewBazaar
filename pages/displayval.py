@@ -6,6 +6,7 @@ st.set_page_config(initial_sidebar_state = "collapsed", layout = "wide")
 st.columns(3)[1].image("images\header.png", use_column_width="auto")
 pred = st.session_state['pred']
 values = st.session_state['values']
+st.session_state['Price'] = "Not initialized"
 if 'price_entry' not in st.session_state:
     st.session_state.price_entry = False
 def enable_price_entry():
@@ -64,6 +65,7 @@ if st.session_state.price_entry:
                 st.write(" ")
                 finale = st.button("Upload images")
                 if finale:
+                    st.session_state['Price'] = price
                     with st.spinner("Redirecting to upload images...."):
                         time.sleep(2)
                         switch_page("imgupload")

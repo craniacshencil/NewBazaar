@@ -7,7 +7,6 @@ from streamlit_extras.switch_page_button import switch_page
 import os
 import imgbbpy
 
-
 #Page Config and Header
 st.set_page_config(initial_sidebar_state = "collapsed", layout = "wide")
 st.columns(3)[1].image("images\\header.png", use_column_width="auto")
@@ -27,19 +26,6 @@ def urlgen(image_urls, img_path):
     image_urls.append(image.url)
     st.success("Process complete.")
 
-#Image resize
-from PIL import Image, ImageOps
-
-
-def padding(img, expected_size):
-    desired_size = expected_size
-    delta_width = desired_size[0] - img.size[0]
-    delta_height = desired_size[1] - img.size[1]
-    pad_width = delta_width // 2
-    pad_height = delta_height // 2
-    padding = (pad_width, pad_height, delta_width - pad_width, delta_height - pad_height)
-    return ImageOps.expand(img, padding)
-
 #Creating uploader, displaying images and saving them locally.
 uploaded_images = st.file_uploader("Upload images", type=["jpg", "jpeg", "png"], accept_multiple_files = True)
 st.info("Upload Landscape photos only")
@@ -49,13 +35,9 @@ counter = 1
 if uploaded_images:
     for uploaded_image in uploaded_images:
         image = Image.open(uploaded_image)
-        #image.convert("RGB")#convert to jpg format
         if image.mode in ("RGBA", "P"):#Converting photos with transparent backgrounds to jpg
             image = image.convert("RGB")
         disp_image = image.resize((200, int(200 * image.height / image.width)))
-        # if image.height > image.width:
-        #     image = image.resize((int(image.width / 4), int(image.height / 4)))
-        #     image = image.crop()
         imgpath = f"temp_storage\\image_{counter}.jpg"
         image.save(imgpath)
 
@@ -65,9 +47,6 @@ if uploaded_images:
         with a:
             st.image(disp_image, caption="Uploaded Image", use_column_width="never")
         counter = counter + 1
-
-#Generating urls for each image
-
 
 #Button for finishing upload
 st.session_state['imageurls'] = []#initializing session state variable
