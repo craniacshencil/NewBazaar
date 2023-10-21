@@ -27,6 +27,19 @@ def urlgen(image_urls, img_path):
     image_urls.append(image.url)
     st.success("Process complete.")
 
+#Image resize
+from PIL import Image, ImageOps
+
+
+def padding(img, expected_size):
+    desired_size = expected_size
+    delta_width = desired_size[0] - img.size[0]
+    delta_height = desired_size[1] - img.size[1]
+    pad_width = delta_width // 2
+    pad_height = delta_height // 2
+    padding = (pad_width, pad_height, delta_width - pad_width, delta_height - pad_height)
+    return ImageOps.expand(img, padding)
+
 #Creating uploader, displaying images and saving them locally.
 uploaded_images = st.file_uploader("Upload images", type=["jpg", "jpeg", "png"], accept_multiple_files = True)
 st.info("Upload Landscape photos only")
@@ -40,9 +53,9 @@ if uploaded_images:
         if image.mode in ("RGBA", "P"):#Converting photos with transparent backgrounds to jpg
             image = image.convert("RGB")
         disp_image = image.resize((200, int(200 * image.height / image.width)))
-        if image.height > image.width:
-            image = image.resize((int(image.width / 4), int(image.height / 4)))
-            image = image.crop()
+        # if image.height > image.width:
+        #     image = image.resize((int(image.width / 4), int(image.height / 4)))
+        #     image = image.crop()
         imgpath = f"temp_storage\\image_{counter}.jpg"
         image.save(imgpath)
 

@@ -40,7 +40,7 @@ with col1:
                     interval = None,
                     img = url)
         img_collection.append(item)
-    carousel(items = img_collection, width = 1)
+        carousel(items = img_collection, width = 1)
 
 #Converting values back
 values = st.session_state['values']
