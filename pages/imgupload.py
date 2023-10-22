@@ -15,7 +15,12 @@ label = "Upload Images: ",
 description = " ",
 color_name = "red-70",
 )
-# st.session_state['image_list'] = []
+
+#Creating session state to display images efficiently
+if 'images_displayed' not in st.session_state:
+    st.session_state['images_displayed'] = False
+def set_images_displayed():
+    st.session_state['images_displayed'] = True
 # image_list = []
 
 #URL generator function
@@ -29,10 +34,12 @@ def urlgen(image_urls, img_path):
 #Creating uploader, displaying images and saving them locally.
 uploaded_images = st.file_uploader("Upload images", type=["jpg", "jpeg", "png"], accept_multiple_files = True)
 st.info("Upload Landscape photos only")
+display_button = st.columns(5)[2].button("Display Images", use_container_width = True, on_click = set_images_displayed)
 col1, col2, col3, col4= st.columns(4)
 col_no = [col1, col2, col3, col4]
 counter = 1
-if uploaded_images:
+
+if st.session_state['images_displayed']:
     for uploaded_image in uploaded_images:
         image = Image.open(uploaded_image)
         if image.mode in ("RGBA", "P"):#Converting photos with transparent backgrounds to jpg
@@ -40,24 +47,24 @@ if uploaded_images:
         disp_image = image.resize((200, int(200 * image.height / image.width)))
         imgpath = f"temp_storage\\image_{counter}.jpg"
         image.save(imgpath)
-
         i = counter % 4 - 1
-        a = col_no[i]
-        urlgen(image_urls, imgpath)
-        with a:
-            st.image(disp_image, caption="Uploaded Image", use_column_width="never")
         counter = counter + 1
+        urlgen(image_urls, imgpath)
+        with col_no[i]:
+            st.image(disp_image, caption="Uploaded Image", use_column_width="never")
+        
 
 #Button for finishing upload
 st.session_state['imageurls'] = []#initializing session state variable
 st.divider()
-col1, col2, col3 = st.columns([3, 1, 3])
-with col2:
-    finish = st.button("Finish Upload")
+finish = st.columns(5)[2].button("Finish Upload", use_container_width = True)
 if finish:
-    st.session_state['imageurls'] = image_urls
-    switch_page("listingpreview")
-
-
+    if st.session_state['images_displayed']:
+        st.session_state['images_displayed'] = None
+        st.session_state['imageurls'] = image_urls
+        switch_page("listingpreview")
+    else:
+        st.error("Confirm the Images first")
+st.subheader(st.session_state['images_displayed'])
 
         

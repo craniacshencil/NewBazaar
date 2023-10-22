@@ -9,6 +9,8 @@ from streamlit_extras.switch_page_button import switch_page
 from streamlit_carousel import carousel
 from streamlit_extras.stylable_container import stylable_container 
 from streamlit_extras.grid import grid
+import pymongo
+from pymongo import MongoClient
 import glob
 import os
 import shutil
@@ -116,7 +118,7 @@ if(emi):
 #  values = [brand, yr, model, variant, fueltype
 #          , transmission, owner, kms]
 
-#Basic details of the car
+#Displaying Basic details of the car
 df = pd.read_csv("data\\data_entry_train.csv")
 df = df.loc[(df.model == values[2]) & (df.variant == values[3])]
 
@@ -161,6 +163,40 @@ with stylable_container(
     my_grid.text_input(label = "Valve Configuration", value = valve_config, disabled = True)
     my_grid.text_input(label = "Kerb Weight", value = f"{str(int(kerb_wt))}", disabled = True)
 
+#Go Back to Dashboard.
 finish = st.columns(5)[2].button("Confirm listing")
 if(finish):
+    #Creating a document to insert it into the database
+    client = MongoClient("localhost", 27017)
+    db = client.carbazaar
+    listing = db.listings
+
+    #  values = [brand, yr, model, variant, fueltype
+    #          , transmission, owner, kms]
+    post = {
+        "Images" : image_urls,
+        "Brand" : values[0], 
+        "Myear" : int(values[1]), 
+        "Model" : values[2],
+        "Variant" : values[3],
+        "Fueltype" : values[4],
+        "Transmission" : values[5],
+        "Ownerno" : values[6],
+        "Kms" : values[7],
+        "Valveconfiguration" : valve_config,
+        "Kerbweight" : kerb_wt,
+        "Seats" : int(seats),
+        "Maxtorque" : int(max_torque),
+        "Body" : body,
+        "Gearbox" : gearbox,
+        "Steeringtype" : steering_type,
+        "Frontbrake" : F_brake,
+        "Rearbrake" : R_brake,
+        "Tyres" : tyres,
+        "Color" : color,
+        "Tread" : int(tread)
+    }
+
+    listings = db.post
+    listings.insert_one(post).inserted_id
     switch_page("dashboard")
