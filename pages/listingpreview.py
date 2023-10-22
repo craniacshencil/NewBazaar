@@ -106,11 +106,13 @@ with col2:
         with col0:
             wishlist = st.button("Wishlist", use_container_width = True)
         with col2:
-            st.button("Calculate EMI", use_container_width = True)
+            emi = st.button("Calculate EMI", use_container_width = True)
         with col1:
             st.button("Book Now", type = "primary", use_container_width = True)
 if(wishlist):
-	st.success("Added to wishlist")
+	st.toast("Added to wishlist")
+if(emi):
+    switch_page("loan")
 #  values = [brand, yr, model, variant, fueltype
 #          , transmission, owner, kms]
 
@@ -130,7 +132,7 @@ R_brake = df['Rear Brake Type'].mode()[0]
 tyres = df['Tyre Type'].mode()[0]
 color = df['exterior_color'].mode()[0]
 tread = df['Tread'].mode()[0]
-st.write(df)
+
 with stylable_container(
     key="container_with_border",
     css_styles="""
@@ -144,25 +146,21 @@ with stylable_container(
     st.subheader("General Features")
     my_grid = grid(4, vertical_align="bottom")
     # Row 1:
-    my_grid.text_input(label = "Body", value = body, disabled = True)
-    my_grid.markdown(f"##### Color:\t{color.capitalize()}")
-    my_grid.markdown(f"##### Seats:\t{str(seats)}")
-    my_grid.markdown(f"##### Max Torque:\t{int(max_torque)} Nm")
+    my_grid.text_input(label = "Body", value = body.capitalize(), disabled = True)
+    my_grid.text_input(label = "Color", value = color.capitalize(), disabled = True)
+    my_grid.text_input(label = "Seats", value = seats, disabled = True)
+    my_grid.text_input(label = "Max Torque", value = f"{int(max_torque)} Nm", disabled = True)
     # Row 2:
-    my_grid.markdown(f"###### Body: {body.capitalize()}")
-    my_grid.markdown(f"###### Color: {color.capitalize()}")
-    my_grid.markdown(f"###### Seats: {str(seats)}")
-    my_grid.markdown(f"###### Max Torque: {int(max_torque)} Nm")
+    my_grid.text_input(label = "GearBox", value = gearbox, disabled = True)
+    my_grid.text_input(label = "Tyres", value = tyres.capitalize(), disabled = True)
+    my_grid.text_input(label = "Steering Type", value = steering_type.capitalize(), disabled = True)
+    my_grid.text_input(label = "Front Brake", value = F_brake.capitalize(), disabled = True)
     # Row 3:
-    my_grid.text_area("Your message", height=40)
-    # Row 4:
-    my_grid.button("Example 1", use_container_width=True)
-    my_grid.button("Example 2", use_container_width=True)
-    my_grid.button("Example 3", use_container_width=True)
-    my_grid.button("Example 4", use_container_width=True)
-    # Row 5 (uses the spec from row 1):
-    with my_grid.expander("Show Filters", expanded=True):
-        st.slider("Filter by Age", 0, 100, 50)
-        st.slider("Filter by Height", 0.0, 2.0, 1.0)
-        st.slider("Filter by Weight", 0.0, 100.0, 50.0)
-    my_grid.dataframe(random_df, use_container_width=True)
+    my_grid.text_input(label = "Rear Brake", value = R_brake.capitalize(), disabled = True)
+    my_grid.text_input(label = "Tread", value = f"{str(int(tread))}", disabled = True)
+    my_grid.text_input(label = "Valve Configuration", value = valve_config, disabled = True)
+    my_grid.text_input(label = "Kerb Weight", value = f"{str(int(kerb_wt))}", disabled = True)
+
+finish = st.columns(5)[2].button("Confirm listing")
+if(finish):
+    switch_page("dashboard")
