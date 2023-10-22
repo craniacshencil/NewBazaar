@@ -4,20 +4,7 @@ import yaml
 from streamlit_extras.switch_page_button import switch_page
 import pandas as pd
 
-# Collapse sidebar on start
-st.set_page_config(initial_sidebar_state="collapsed",layout="wide")
-
-st.markdown(
-    """
-<style>
-    [data-testid="collapsedControl"] {
-        display: none
-    }
-</style>
-""",
-    unsafe_allow_html=True,
-)
-
+#Check Login Status
 from yaml.loader import SafeLoader
 with open('config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
@@ -29,13 +16,21 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days'],
     config['preauthorized']
 )
+#Remove sidebar, add header image
+st.markdown(
+    """
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+""",
+    unsafe_allow_html=True,
+)
 st.columns(3)[1].image("images\\header.png",use_column_width="auto")
 
-#"---"
-
+#Content
 col1, col2, col3, col4 = st.columns(4)
-
-#    st.write("hhh")
 df = pd.read_csv("data\\data_entry_train.csv")
 #st.dataframe(pd.DataFrame(df))
 #st.write(df.km.min())

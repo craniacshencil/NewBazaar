@@ -6,10 +6,42 @@ from streamlit_extras.colored_header import colored_header
 from streamlit_extras.switch_page_button import switch_page
 import os
 import imgbbpy
+import yaml
+from yaml.loader import SafeLoader
+import streamlit_authenticator as stauth
 
-#Page Config and Header
-st.set_page_config(initial_sidebar_state = "collapsed", layout = "wide")
+#Checking login status
+with open('config.yaml') as file:
+    config = yaml.load(file, Loader=SafeLoader)
+
+authenticator = stauth.Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days'],
+    config['preauthorized']
+)
+
+authentication_status = st.session_state["authentication_status"]
+name = st.session_state["name"]
+
+if not authentication_status:
+    switch_page("Login")
+
+#Collapse and remove sidebar, add header image
+st.markdown(
+    """
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+""",
+    unsafe_allow_html=True,
+)
 st.columns(3)[1].image("images\\header.png", use_column_width="auto")
+
+#Page title
 colored_header(
 label = "Upload Images: ",
 description = " ",
@@ -17,6 +49,7 @@ color_name = "red-70",
 )
 
 #Creating session state to display images efficiently
+st.session_state['img_list'] = []
 if 'images_displayed' not in st.session_state:
     st.session_state['images_displayed'] = False
 def set_images_displayed():
@@ -27,7 +60,7 @@ def set_images_displayed():
 image_urls = []
 def urlgen(image_urls, img_path):
     client = imgbbpy.SyncClient('4ca08e789920c7f74605a4a461528c64')
-    image = client.upload(file = img_path, expiration = 300)
+    image = client.upload(file = img_path, expiration = 2592000)#Link valid for 30 days since creation
     image_urls.append(image.url)
     st.success("Process complete.")
 
@@ -65,6 +98,5 @@ if finish:
         switch_page("listingpreview")
     else:
         st.error("Confirm the Images first")
-st.subheader(st.session_state['images_displayed'])
 
         

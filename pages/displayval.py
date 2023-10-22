@@ -2,8 +2,22 @@ import streamlit as st
 import time
 from streamlit_extras.colored_header import colored_header
 from streamlit_extras.switch_page_button import switch_page
+
+#Collapse and remove sidebar, add header image
 st.set_page_config(initial_sidebar_state = "collapsed", layout = "wide")
 st.columns(3)[1].image("images\header.png", use_column_width="auto")
+st.markdown(
+    """
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
+#Initializing, setting session states and related variables
 pred = st.session_state['pred']
 values = st.session_state['values']
 st.session_state['Price'] = "Not initialized"
@@ -13,9 +27,9 @@ def enable_price_entry():
     st.session_state.price_entry = True
 lb = pred - pred * 8/100
 ub = pred + pred * 4/100
-#colored_header(label = "Suggested Valuation:",
-               #description = " ", 
-               #color_name = "red-70")
+
+#Content
+ #Displaying the price range
 st.header("Suggested Valuation: ", divider = "red")
 st.header(" ")
 car_name = f"{values[0].capitalize()} {values[2].capitalize()}, {values[1]}"
@@ -45,6 +59,8 @@ with col2:
                 color_name = 'red-70')
 st.header(" ")  
 st.header(" ")
+
+ #Continue to list and finalized price input
 col1, col2, col3 = st.columns([5, 2, 4])
 with col2:
     to_list = st.button("  Proceed to list  ", on_click = enable_price_entry)   

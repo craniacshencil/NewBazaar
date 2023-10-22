@@ -14,17 +14,42 @@ from pymongo import MongoClient
 import glob
 import os
 import shutil
+import yaml
+from yaml.loader import SafeLoader
+import streamlit_authenticator as stauth
 
-#Empty out the entire folder
-for filename in os.listdir("temp_storage"):
-    filepath = os.path.join("temp_storage", filename)
-    try:
-        shutil.rmtree(filepath)
-    except OSError:
-        os.remove(filepath)
 
-#Webpage settings and header config
+#Collapsing and removing sidebar, adding header image
 st.set_page_config(initial_sidebar_state = "collapsed", layout = "wide")
+with open('config.yaml') as file:
+    config = yaml.load(file, Loader=SafeLoader)
+
+authenticator = stauth.Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days'],
+    config['preauthorized']
+)
+
+authentication_status = st.session_state["authentication_status"]
+name = st.session_state["name"]
+
+if not authentication_status:
+    switch_page("Login")
+
+# Remove sidebar,adding header image
+st.markdown(
+    """
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
 image = Image.open("images\\header.png")
 image = image.resize((300, int(300 * image.height / image.width)))
 st.columns(3)[1].image(image)
@@ -33,6 +58,15 @@ label = "Confirm Listing: ",
 description = " ",
 color_name = "red-70",
 )
+
+
+#Empty out the entire folder containing uploaded images from imguplaod.py
+for filename in os.listdir("temp_storage"):
+    filepath = os.path.join("temp_storage", filename)
+    try:
+        shutil.rmtree(filepath)
+    except OSError:
+        os.remove(filepath)
 
 #Generating carousel out of urls
 col1, col2 = st.columns([2, 1], gap = "small")
@@ -47,7 +81,7 @@ with col1:
         img_collection.append(item)
     carousel(items = img_collection, width = 1)
 
-#Converting values back
+#Converting values back to original form for display
 price = st.session_state['Price']
 values = st.session_state['values']
 if values[5] == 0:
@@ -79,7 +113,7 @@ if values[6] == 5:
 else:
     values[6] = "6th"
 
-#Basic Car Details
+#Car Overview
 with col2:
     with stylable_container(
         key="container_with_border",
@@ -163,10 +197,9 @@ with stylable_container(
     my_grid.text_input(label = "Valve Configuration", value = valve_config, disabled = True)
     my_grid.text_input(label = "Kerb Weight", value = f"{str(int(kerb_wt))}", disabled = True)
 
-#Go Back to Dashboard.
+#Go Back to Dashboard and adding the listing to Database
 finish = st.columns(5)[2].button("Confirm listing")
 if(finish):
-    #Creating a document to insert it into the database
     client = MongoClient("localhost", 27017)
     db = client.carbazaar
     listing = db.listings
