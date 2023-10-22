@@ -4,24 +4,49 @@ import time
 import pickle
 from streamlit_extras.colored_header import colored_header
 from streamlit_extras.switch_page_button import switch_page
+from streamlit_option_menu import option_menu
+
+# Remove sidebar via CSS and adding header image
+st.set_page_config(initial_sidebar_state = "collapsed", layout = "wide")
+st.markdown(
+    """
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+""",
+    unsafe_allow_html=True,
+)
+st.columns(3)[1].image("images\\header.png",use_column_width="auto")
 
 
+
+#Loading data and model
 df = pd.read_csv("data\\train3.csv")
 df2 = pd.read_csv("data\\data_entry_train.csv")
-
-#def main():
-#Loading the model
-st.set_page_config(initial_sidebar_state = "collapsed", layout = "wide")
 pickle_in = open('models\\predictor.pkl', 'rb')
 cat_model = pickle.load(pickle_in)
-st.columns(3)[1].image("images\\header.png",use_column_width="auto")
-#st.subheader('About your car: ')
+
+#NavBar config
+nav_bar = option_menu(None, ["Home", "Check Valuation", "My Listings", "Wishlist"],
+    icons=["Home", 'cash-coin', "car-front", "bag-heart-fill"],
+    menu_icon="cast", default_index = 1, orientation="horizontal")
+if nav_bar == "Home":
+        switch_page("dashboard")
+if nav_bar == "My Listings":
+        switch_page("mylisting")
+if nav_bar == "Wishlist":
+        switch_page("wishlist")
+
+#PageTitle
 colored_header(
 label = "About your Car: ",
 description = "Enter the mentioned details",
 color_name = "red-70",
 )
-#st.divider()
+
+#Content - Input form seeking car details
 col1, col2, col3 = st.columns([1, 4, 1])
 with col2:
         brand = st.selectbox("Enter the brand of your car: "
@@ -54,7 +79,6 @@ with col2:
         owner = st.selectbox("Enter owner-number: ", 
                         df['owner_type'].unique())
         st.info("here 1 = first owner")
-        #st.divider()
         kms = st.number_input("Enter kms driven: ", min_value = 0
                         , max_value = 130000, step = 5000)
 
@@ -62,6 +86,7 @@ st.session_state['kms'] = 'not set'
 if kms != 0:
         st.session_state['kms'] = 'set'
 st.divider()
+#Converting string values to encodings for using them in the model
 if transmission == 'manual':
         transmission = 0
 else:
@@ -77,7 +102,8 @@ if fueltype == 'diesel':
         fueltype = 3
 if fueltype == 'electric':
         fueltype = 4
-#st.divider()
+
+#Button to confirm details
 confirmation = st.columns(7)[3].button("Confirm details")
 if(confirmation):
         if st.session_state['kms'] == 'not set':
@@ -90,6 +116,7 @@ if(confirmation):
                         time.sleep(0.01)
                         my_bar.progress(percent_complete + 1, text=progress_text)
                 
+                #Getting features ready, fetching some from dataframe and making predictions using the model
                 values = [brand, yr, model, variant, fueltype
                         , transmission, owner, kms]
                 temp = df.loc[(df.oem == values[0]) 
