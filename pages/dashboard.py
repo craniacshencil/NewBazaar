@@ -45,8 +45,6 @@ st.markdown(
 )
 st.columns(3)[1].image("images\\header.png" ,use_column_width="auto")
 
-
-
 #Checking if user has phone number
 number_exists = False
 if "phone_number" in config["credentials"]["usernames"][username]:

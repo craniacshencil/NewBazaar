@@ -4,6 +4,13 @@ import yaml
 from streamlit_extras.switch_page_button import switch_page
 from streamlit_option_menu import option_menu
 import pandas as pd
+from streamlit_extras.stylable_container import stylable_container 
+import pymongo
+from pymongo import MongoClient
+from PIL import Image
+import pillow_avif
+import requests
+from io import BytesIO
 
 #Check Login Status
 from yaml.loader import SafeLoader
@@ -50,49 +57,81 @@ if nav_bar == "Check Valuation":
     switch_page("valuation")
 
 #Content
-col1, col2, col3, col4 = st.columns(4)
+st.header("Listings", divider = "red")
+col1, col2, col3, col4 = st.columns([0.15, 0.25, 0.25, 0.25])
 df = pd.read_csv("data\\data_entry_train.csv")
-#st.dataframe(pd.DataFrame(df))
-#st.write(df.km.min())
-#st.write(df.km.max())
-#st.write(sorted(df.km,reverse = True)[:10])
 
 with col1:
     st.subheader("Filters")
     st.slider(label = "Price Range (in lacs)", min_value = round(df.listed_price.min() / 1000), max_value = round(df.listed_price.max() / 1000), value =  (4000,120000), step = 100)
-    st.selectbox("Brand",df.oem.unique())
-    st.radio("Fuel Type",df.fuel.unique())
     st.slider(label = "Year", min_value = df.myear.min(), max_value = df.myear.max(), value =  (2013,2019))
-    st.radio("Transmission Type",df.transmission.unique())
-   # st.radio("Kms Driven")
-    #with st.expander("See explanation"):
-    #    st.write("The chart above shows some numbers I picked for you I rolled actual dice for these so theyre guaranteed tobe random")
+    st.selectbox("Brand",df.oem.unique())
+    st.selectbox("Fuel Type",df.fuel.unique())
+    st.selectbox("Transmission Type",df.transmission.unique())
 
-with col2:
-    for i in range(0,2):
-        with st.container():
-            st.image("images\\car_placeholder.png")
-            st.write("This is inside the container")
-            st.write("This is inside the container")
-            st.write("This is inside the container")
-        
 
+#MongoDB config
+client = MongoClient("localhost", 27017)
+db = client.carbazaar
+listings = db.post
+cars = list(listings.find())
+imgs = [car.get('Images') for car in cars]
+disp = []
+urls = [img[0] for img in imgs]
+for url in urls:
+    response = requests.get(url, stream=True)
+    if response.status_code == 200:
+        original_image = Image.open(BytesIO(response.content)) 
+        new_aspect_ratio = 5/3 
+        original_aspect_ratio = original_image.width / original_image.height
+
+        if original_aspect_ratio > new_aspect_ratio:
+            new_width = original_image.width
+            new_height = int(new_width / new_aspect_ratio)
+        else:
+            new_height = original_image.height
+            new_width = int(new_height * new_aspect_ratio)
+
+        new_image = Image.new("RGB", (new_width, new_height), (125, 125, 125))
+
+        x_offset = (new_width - original_image.width) // 2
+        y_offset = (new_height - original_image.height) // 2
+        new_image.paste(original_image, (x_offset, y_offset))
+        disp.append(new_image)
+
+# price = [car.get('Priceinlakh') for car in cars]
+# myear = [car.get('Myear') for car in cars]
+# # brand = [car.get('Brand') for car in cars]
+# model = [car.get('Model') for car in cars]
+# variant = [car.get('Variant') for car in cars]
+# fuel = [car.get('Fueltype') for car in cars]
+# kms = [car.get('Kms') for car in cars]
+# transmission = [car.get('Transmission') for car in cars]
+
+cols = [col2, col3, col4]
+i = 0
+for car in cars:
+    a = cols[i % 3]
+    with a:
+        with stylable_container(
+            key="container_with_border",
+            css_styles="""
+                {
+                    border: 1px solid rgba(255, 255, 255, 1);
+                    border-radius: 1rem;
+                    padding: calc(0.75em - 1px)
+                }
+                """,
+        ):
+            col1, col2 = st.columns([0.99,0.01])
+            with col1:
+                image = disp[i]
+                st.image(disp[i], use_column_width = "always")
+                st.write("This is inside the container")
+                st.write("This is inside the container")
+    i = i + 1
 with col3:
-    for i in range(0,2):
-        with st.container():
-            st.image("images\\car_placeholder.png")
-            st.write("This is inside the container")
-            st.write("This is inside the container")
-            st.write("This is inside the container")
-            
-
-with col4:
-    for i in range(0,2):
-        with st.container():
-            st.image("images\\car_placeholder.png")
-            st.write("This is inside the container")
-            st.write("This is inside the container")
-            st.write("This is inside the container")            
+    st.write(len(disp))                 
     
        
     
