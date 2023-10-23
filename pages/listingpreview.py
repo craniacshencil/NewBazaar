@@ -84,6 +84,9 @@ with col1:
 #Converting values back to original form for display
 price = st.session_state['Price']
 values = st.session_state['values']
+name = st.session_state['name']
+phonenumber = st.session_state['phonenumber']
+
 if values[5] == 0:
     values[5] = "Manual"
 else:
@@ -166,9 +169,10 @@ steering_type = df['Steering Type'].mode()[0]
 F_brake = df['Front Brake Type'].mode()[0]
 R_brake = df['Rear Brake Type'].mode()[0]
 tyres = df['Tyre Type'].mode()[0]
-color = df['exterior_color'].mode()[0]
+Fuelsupplysystem = df['Fuel Supply System'].mode()[0]
 tread = df['Tread'].mode()[0]
 
+st.divider()
 with stylable_container(
     key="container_with_border",
     css_styles="""
@@ -183,11 +187,11 @@ with stylable_container(
     my_grid = grid(4, vertical_align="bottom")
     # Row 1:
     my_grid.text_input(label = "Body", value = body.capitalize(), disabled = True)
-    my_grid.text_input(label = "Color", value = color.capitalize(), disabled = True)
+    my_grid.text_input(label = "GearBox", value = gearbox, disabled = True)
     my_grid.text_input(label = "Seats", value = seats, disabled = True)
     my_grid.text_input(label = "Max Torque", value = f"{int(max_torque)} Nm", disabled = True)
     # Row 2:
-    my_grid.text_input(label = "GearBox", value = gearbox, disabled = True)
+    my_grid.text_input(label = "Fuel-Supply System", value = Fuelsupplysystem, disabled = True)
     my_grid.text_input(label = "Tyres", value = tyres.capitalize(), disabled = True)
     my_grid.text_input(label = "Steering Type", value = steering_type.capitalize(), disabled = True)
     my_grid.text_input(label = "Front Brake", value = F_brake.capitalize(), disabled = True)
@@ -207,6 +211,9 @@ if(finish):
     #  values = [brand, yr, model, variant, fueltype
     #          , transmission, owner, kms]
     post = {
+        "Seller" : name,
+        "Phonenumber" : phonenumber,
+        "Priceinlakh" : price,
         "Images" : image_urls,
         "Brand" : values[0], 
         "Myear" : int(values[1]), 
@@ -217,7 +224,7 @@ if(finish):
         "Ownerno" : values[6],
         "Kms" : values[7],
         "Valveconfiguration" : valve_config,
-        "Kerbweight" : kerb_wt,
+        "Kerbweight" : int(kerb_wt),
         "Seats" : int(seats),
         "Maxtorque" : int(max_torque),
         "Body" : body,
@@ -226,7 +233,7 @@ if(finish):
         "Frontbrake" : F_brake,
         "Rearbrake" : R_brake,
         "Tyres" : tyres,
-        "Color" : color,
+        "Fuelsupplysystem" : Fuelsupplysystem,
         "Tread" : int(tread)
     }
 

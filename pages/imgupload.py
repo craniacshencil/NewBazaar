@@ -91,10 +91,16 @@ if st.session_state['images_displayed']:
 #Button for finishing upload
 st.session_state['imageurls'] = []#initializing session state variable
 st.divider()
-finish = st.columns(5)[2].button("Finish Upload", use_container_width = True)
+col1, col2, col3, col4, col5, col6 = st.columns(6)
+with col3:    
+    finish = st.button("Finish Upload", use_container_width = True)
+with col4:
+    back = st.button("Back", use_container_width = True)
+if back:
+    switch_page("displayval")
 if finish:
     if st.session_state['images_displayed']:
-        st.session_state['images_displayed'] = None
+        # st.session_state['images_displayed'] = None
         st.session_state['imageurls'] = image_urls
         switch_page("listingpreview")
     else:

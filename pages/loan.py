@@ -71,7 +71,7 @@ with col1:
     principal_in_lakhs = st.slider('Principal amount (in lakhs)',min_value=1.0, max_value= price, step = 0.1)
     principal = principal_in_lakhs * 100000 
     interest_rate = st.slider('Interest rate', min_value = 8.0, max_value=25.0, step = 0.5)
-    term = st.slider('Term (in years)', min_value = 0.5, max_value = 10, step = 0.5)
+    term = st.slider('Term (in years)', min_value = 0.5, max_value = 10.0, step = 0.5)
     margin, col1 = st.columns([2, 3])
 emi , payable_interest, total_amount = loan_amount(principal, interest_rate, term)
 
