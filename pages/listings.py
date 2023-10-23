@@ -106,11 +106,19 @@ for url in urls:
 # variant = [car.get('Variant') for car in cars]
 # fuel = [car.get('Fueltype') for car in cars]
 # kms = [car.get('Kms') for car in cars]
-# transmission = [car.get('Transmission') for car in cars]
+transmission = [car.get('Transmission') for car in cars]
 
 cols = [col2, col3, col4]
 i = 0
 for car in cars:
+    button_key = f"button_{i}"
+    carbrand = car.get("Brand").capitalize()
+    carmodel = car.get("Model").capitalize()
+    carmyear = car.get("Myear")
+    carfuel = car.get("Fueltype").capitalize()
+    cartransmission = car.get("Transmission").capitalize()
+    carkms = car.get("Kms")
+    carprice = car.get("Priceinlakh")
     a = cols[i % 3]
     with a:
         with stylable_container(
@@ -123,15 +131,21 @@ for car in cars:
                 }
                 """,
         ):
-            col1, col2 = st.columns([0.99,0.01])
+            col1, col2 = st.columns([0.999, 0.001])
             with col1:
                 image = disp[i]
                 st.image(disp[i], use_column_width = "always")
-                st.write("This is inside the container")
-                st.write("This is inside the container")
+                st.markdown(f"#### {carmyear} {carbrand} {carmodel}")
+                st.caption(f"{carfuel} · {cartransmission} · {carkms} kms ")
+            col1, col2 = st.columns([0.8, 0.2])
+            with col1:
+                st.markdown(f"### ₹{carprice} Lakh")
+                st.write("")
+            with col2:
+                st.button(label = "View", key = button_key, use_container_width = True, type = "primary")
     i = i + 1
 with col3:
-    st.write(len(disp))                 
+    st.write(len(transmission))                 
     
        
     
