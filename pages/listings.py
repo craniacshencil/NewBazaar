@@ -17,6 +17,12 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days'],
     config['preauthorized']
 )
+
+authentication_status = st.session_state["authentication_status"]
+name = st.session_state["name"]
+
+if not authentication_status:
+    switch_page("Login")
 #Remove sidebar, add header image
 st.markdown(
     """

@@ -38,11 +38,9 @@ try:
 except Exception as e:
     st.error(e)
 
-with open('config.yaml', 'w') as file:
-    yaml.dump(config, file, default_flow_style=False)
-
 if registered_successfully:
-    # switch_page("phone")
+    with open('config.yaml', 'w') as file:
+        yaml.dump(config, file, default_flow_style=False)
     st.toast("Redirecting to login in 3 sec..")
     time.sleep(4)
     switch_page("login")

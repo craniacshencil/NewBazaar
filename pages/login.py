@@ -28,7 +28,7 @@ authenticator = stauth.Authenticate(
 
 st.columns(3)[1].image("images\\header.png",use_column_width="auto")
 
-name, authentication_status, username = authenticator.login('Login', 'main')
+name, authentication_status, username= authenticator.login('Login', 'main')
 if username == "admin2":
     switch_page("admin")
 if authentication_status:
