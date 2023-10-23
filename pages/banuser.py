@@ -27,20 +27,23 @@ if (not authentication_status) or (name != "admin2"):
 
 #Header image and text
 st.columns(3)[1].image("images/header.png",use_column_width="auto")
-colored_header(
-label = "Admin Panel ",
-description = "",
-color_name = "red-70",
-)
 
-#Content
 #Adding NavBar
 nav_bar = option_menu(None, ["Dashboard", "Ban User", "Schedule Inspection"],
-    icons=['house', 'exclamaion-diamond', "calendar3"],
+    icons=['house', 'exclamation-diamond', "calendar3"],
     menu_icon = "cast", default_index = 1, orientation = "horizontal")
 
 if nav_bar == "Dashboard":
 	switch_page("admin")
 
-if nav_bar == "Schedule inspection":
+if nav_bar == "Schedule Inspection":
 	switch_page("inspection")
+
+#Header Text
+colored_header(
+label = "User Ban",
+description = "",
+color_name = "red-70",
+)
+
+#Content

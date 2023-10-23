@@ -24,8 +24,21 @@ name = st.session_state["name"]
 if (not authentication_status):
     switch_page("Login")
 
-#Header image and text
+#Header image
 st.columns(3)[1].image("images/header.png",use_column_width="auto")
+
+#Adding NavBar
+nav_bar = option_menu(None, ["Dashboard", "Ban User", "Schedule Inspection"],
+    icons=['house', 'exclamation-diamond', "calendar3"],
+    menu_icon = "cast", default_index = 0, orientation = "horizontal")
+
+if nav_bar == "Ban User":
+	switch_page("banuser")
+
+if nav_bar == "Schedule Inspection":
+	switch_page("inspection")
+
+#Header text
 colored_header(
 label = "Admin Panel ",
 description = "",
@@ -33,16 +46,3 @@ color_name = "red-70",
 )
 
 #Content
-#Adding NavBar
-nav_bar = option_menu(None, ["Dashboard", "Ban User", "Schedule Inspection"],
-    icons=['house', 'exclamaion-diamond', "calendar3"],
-    menu_icon = "cast", default_index = 0, orientation = "horizontal")
-
-if nav_bar == "Ban User":
-	switch_page("userban")
-
-if nav_bar == "Schedule inspection":
-	switch_page("inspection")
-
-
-
