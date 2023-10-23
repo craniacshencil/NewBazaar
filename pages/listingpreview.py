@@ -102,13 +102,13 @@ if values[4] == 4:
 
 if values[6] == 1:
     values[6] = "1st"
-if values[6] == 2:
+elif values[6] == 2:
     values[6] = "2nd"
-if values[6] == 3:
+elif values[6] == 3:
     values[6] = "3rd"
-if values[6] == 4:
+elif values[6] == 4:
     values[6] = "4th"
-if values[6] == 5:
+elif values[6] == 5:
     values[6] = "5th"
 else:
     values[6] = "6th"
@@ -232,4 +232,7 @@ if(finish):
 
     listings = db.post
     listings.insert_one(post).inserted_id
+    st.success("Your Car has been successfully listed")
+    st.toast("Redirecting to login in 3 sec..")
+    time.sleep(3)
     switch_page("dashboard")

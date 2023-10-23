@@ -2,6 +2,7 @@
 import streamlit as st
 import time
 from PIL import Image
+import pillow_avif
 from streamlit_extras.colored_header import colored_header
 from streamlit_extras.switch_page_button import switch_page
 import os
@@ -65,7 +66,7 @@ def urlgen(image_urls, img_path):
     st.success("Process complete.")
 
 #Creating uploader, displaying images and saving them locally.
-uploaded_images = st.file_uploader("Upload images", type=["jpg", "jpeg", "png"], accept_multiple_files = True)
+uploaded_images = st.file_uploader("Upload images", type=["jpg", "jpeg", "png", "AVIF", "bmp", "webp"], accept_multiple_files = True)
 st.info("Upload Landscape photos only")
 display_button = st.columns(5)[2].button("Display Images", use_container_width = True, on_click = set_images_displayed)
 col1, col2, col3, col4= st.columns(4)
