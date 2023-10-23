@@ -4,6 +4,9 @@ from streamlit_option_menu import option_menu
 import yaml
 from yaml.loader import SafeLoader
 import streamlit_authenticator as stauth
+import base64
+from st_clickable_images import clickable_images
+
 
 #Check Login Status
 with open('config.yaml') as file:
@@ -50,10 +53,22 @@ if nav_bar == "Wishlist":
 	switch_page("wishlist")
 
 #Content
-col1, col2 = st.columns(2, gap="small")
-with col1:
-	st.image("images/buy_now.png")
-
+col1, col2 = st.columns([0.05, 0.95])
 with col2:
-	st.image("images/sell_ride.png")
+    images = []
+    for file in ["images//buy_now.png", "images//sell_ride.png"]:
+        with open(file, "rb") as image:
+            encoded = base64.b64encode(image.read()).decode()
+            images.append(f"data:image/jpeg;base64,{encoded}")
+
+    clicked = clickable_images(
+        images,
+        titles = ["buy", "sell"],
+        div_style = {"display": "block", "justify-content": "flex-start", "flex-wrap": "nowrap", "width" : "1200px"},
+        img_style = {"margin": "1px", "height": "590px", "width" : "590px"},
+    )
+    if clicked == 0:
+          switch_page("listings")
+    if clicked == 1:
+          switch_page("valuation")
 
