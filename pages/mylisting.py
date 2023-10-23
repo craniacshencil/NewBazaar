@@ -35,17 +35,17 @@ st.markdown(
 )
 st.columns(3)[1].image("images\\header.png" ,use_column_width="auto")
 
-#Nav bar setup
-nav_bar = option_menu(None, ["Home", "Check Valuation", "My Listings", "Wishlist"],
-    icons=["Home", 'cash-coin', "car-front", "bag-heart-fill"],
-    menu_icon="cast", default_index = 2, orientation="horizontal")
-if nav_bar == "Check Valuation":
-	switch_page("valuation")
-
+#NavBar config
+nav_bar = option_menu(None, ["Home", "Check Valuation", "Buy", "My Listings", "Wishlist"],
+    icons=["house-fill", 'cash-coin', "car-front", "bag", "bookmark-heart-fill"],
+    menu_icon="cast", default_index = 3, orientation="horizontal")
 if nav_bar == "Home":
-	switch_page("dashboard")
-
+    switch_page("dashboard")
 if nav_bar == "Wishlist":
-	switch_page("wishlist")
+    switch_page("wishlist")
+if nav_bar == "Check Valuation":
+    switch_page("valuation")
+if nav_bar == "Buy":
+    switch_page("listings")
 
 #Content

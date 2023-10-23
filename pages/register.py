@@ -42,7 +42,7 @@ with open('config.yaml', 'w') as file:
     yaml.dump(config, file, default_flow_style=False)
 
 if registered_successfully:
-    switch_page("phone")
+    # switch_page("phone")
     st.toast("Redirecting to login in 3 sec..")
     time.sleep(4)
     switch_page("login")

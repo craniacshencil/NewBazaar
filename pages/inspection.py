@@ -3,8 +3,9 @@ import streamlit_authenticator as stauth
 import yaml
 from streamlit_extras.switch_page_button import switch_page
 from streamlit_extras.colored_header import colored_header
-from streamlit_option_menu import option_menu
 from yaml.loader import SafeLoader
+from streamlit_option_menu import option_menu
+
 
 #Check Login Status
 with open('config.yaml') as file:
@@ -21,7 +22,7 @@ authenticator = stauth.Authenticate(
 authentication_status = st.session_state["authentication_status"]
 name = st.session_state["name"]
 
-if (not authentication_status):
+if (not authentication_status) or (name != "admin2"):
     switch_page("Login")
 
 #Header image and text
@@ -36,13 +37,10 @@ color_name = "red-70",
 #Adding NavBar
 nav_bar = option_menu(None, ["Dashboard", "Ban User", "Schedule Inspection"],
     icons=['house', 'exclamaion-diamond', "calendar3"],
-    menu_icon = "cast", default_index = 0, orientation = "horizontal")
+    menu_icon = "cast", default_index = 2, orientation = "horizontal")
+
+if nav_bar == "Dashboard":
+	switch_page("admin")
 
 if nav_bar == "Ban User":
-	switch_page("userban")
-
-if nav_bar == "Schedule inspection":
-	switch_page("inspection")
-
-
-
+	switch_page("banuser")

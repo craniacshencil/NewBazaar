@@ -2,6 +2,7 @@ import streamlit as st
 import streamlit_authenticator as stauth
 import yaml
 from streamlit_extras.switch_page_button import switch_page
+from streamlit_option_menu import option_menu
 import pandas as pd
 
 #Check Login Status
@@ -28,6 +29,19 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.columns(3)[1].image("images\\header.png",use_column_width="auto")
+
+#NavBar config
+nav_bar = option_menu(None, ["Home", "Check Valuation", "Buy", "My Listings", "Wishlist"],
+    icons=["house-fill", 'cash-coin', "car-front", "bag", "bookmark-heart-fill"],
+    menu_icon="cast", default_index = 2, orientation="horizontal")
+if nav_bar == "Home":
+    switch_page("dashboard")
+if nav_bar == "My Listings":
+    switch_page("mylisting")
+if nav_bar == "Wishlist":
+    switch_page("wishlist")
+if nav_bar == "Check Valuation":
+    switch_page("valuation")
 
 #Content
 col1, col2, col3, col4 = st.columns(4)

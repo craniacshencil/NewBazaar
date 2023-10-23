@@ -19,7 +19,7 @@ st.columns(3)[1].image("images/header.png",use_column_width="auto")
 
 #Adding NavBar
 nav_bar = option_menu(None, ["Home", "Login", "Register"],
-    icons=['house', 'cloud-upload', "list-task", 'gear'],
+    icons=['house', 'cloud-upload', "list-task"],
     menu_icon="cast", default_index=0, orientation="horizontal")
 
 if nav_bar == "Login":

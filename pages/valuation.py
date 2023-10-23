@@ -29,15 +29,17 @@ pickle_in = open('models\\predictor.pkl', 'rb')
 cat_model = pickle.load(pickle_in)
 
 #NavBar config
-nav_bar = option_menu(None, ["Home", "Check Valuation", "My Listings", "Wishlist"],
-    icons=["Home", 'cash-coin', "car-front", "bag-heart-fill"],
+nav_bar = option_menu(None, ["Home", "Check Valuation", "Buy", "My Listings", "Wishlist"],
+    icons=["house-fill", 'cash-coin', "car-front", "bag", "bookmark-heart-fill"],
     menu_icon="cast", default_index = 1, orientation="horizontal")
 if nav_bar == "Home":
-        switch_page("dashboard")
+    switch_page("dashboard")
 if nav_bar == "My Listings":
-        switch_page("mylisting")
+    switch_page("mylisting")
 if nav_bar == "Wishlist":
-        switch_page("wishlist")
+    switch_page("wishlist")
+if nav_bar == "Buy":
+    switch_page("listings")
 
 #PageTitle
 colored_header(

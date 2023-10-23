@@ -102,15 +102,15 @@ if values[4] == 4:
 
 if values[6] == 1:
     values[6] = "1st"
-elif values[6] == 2:
+if values[6] == 2:
     values[6] = "2nd"
-elif values[6] == 3:
+if values[6] == 3:
     values[6] = "3rd"
-elif values[6] == 4:
+if values[6] == 4:
     values[6] = "4th"
-elif values[6] == 5:
+if values[6] == 5:
     values[6] = "5th"
-else:
+if values[6] == 6:
     values[6] = "6th"
 
 #Car Overview
@@ -233,6 +233,6 @@ if(finish):
     listings = db.post
     listings.insert_one(post).inserted_id
     st.success("Your Car has been successfully listed")
-    st.toast("Redirecting to login in 3 sec..")
+    st.toast("Redirecting to dashboard in 3 sec..")
     time.sleep(3)
     switch_page("dashboard")
