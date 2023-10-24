@@ -141,13 +141,13 @@ with col2:
         col1, col2, col3 = st.columns([1, 40, 1])
         with col2:
             st.divider()
-        col0, col1, col2 = st.columns(3)
+        col0, col1, col2 = st.columns([2, 3, 3], gap = "small")
         with col0:
             wishlist = st.button("Wishlist", use_container_width = True)
         with col2:
             emi = st.button("Calculate EMI", use_container_width = True)
         with col1:
-            st.button("Book Now", type = "primary", use_container_width = True)
+            st.link_button("Contact Seller", f"https://wa.me/{phonenumber}", type = "primary", use_container_width = True)
 if(wishlist):
 	st.toast("Added to wishlist")
 if(emi):

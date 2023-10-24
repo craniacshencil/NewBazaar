@@ -69,6 +69,8 @@ with col1:
     st.selectbox("Fuel Type",df.fuel.unique())
     st.selectbox("Transmission Type",df.transmission.unique())
 
+#Adding a session state to transfer information
+st.session_state['car'] = None
 
 #MongoDB config
 client = MongoClient("localhost", 27017)
@@ -106,7 +108,7 @@ for url in urls:
 # variant = [car.get('Variant') for car in cars]
 # fuel = [car.get('Fueltype') for car in cars]
 # kms = [car.get('Kms') for car in cars]
-transmission = [car.get('Transmission') for car in cars]
+# transmission = [car.get('Transmission') for car in cars]
 
 cols = [col2, col3, col4]
 i = 0
@@ -117,6 +119,7 @@ for car in cars:
     carmyear = car.get("Myear")
     carfuel = car.get("Fueltype").capitalize()
     cartransmission = car.get("Transmission").capitalize()
+    carvariant = car.get("Variant").capitalize()
     carkms = car.get("Kms")
     carprice = car.get("Priceinlakh")
     a = cols[i % 3]
@@ -135,17 +138,20 @@ for car in cars:
             with col1:
                 image = disp[i]
                 st.image(disp[i], use_column_width = "always")
-                st.markdown(f"#### {carmyear} {carbrand} {carmodel}")
-                st.caption(f"{carfuel} · {cartransmission} · {carkms} kms ")
-            col1, col2 = st.columns([0.8, 0.2])
+                st.markdown(f"#### {carmyear} {carbrand} {carmodel} {carvariant}")
+                st.caption(f"{carfuel} · {cartransmission} · {int(car['Kms'] / 1e3)}k kms ")
+            col1, col2 = st.columns([0.7, 0.3])
             with col1:
                 st.markdown(f"### ₹{carprice} Lakh")
                 st.write("")
             with col2:
-                st.button(label = "View", key = button_key, use_container_width = True, type = "primary")
-    i = i + 1
-with col3:
-    st.write(len(transmission))                 
+                view = st.button(label = "View", key = button_key, use_container_width = True, type = "primary")
+                i = i + 1
+                if view:
+                    st.session_state['car'] = car
+                    switch_page('experiments')
+# with col3:
+#     st.write(len(transmission))                 
     
        
     

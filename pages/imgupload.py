@@ -93,7 +93,7 @@ st.session_state['imageurls'] = []#initializing session state variable
 st.divider()
 col1, col2, col3, col4, col5, col6 = st.columns(6)
 with col3:    
-    finish = st.button("Finish Upload", use_container_width = True)
+    finish = st.button("Finish Upload", use_container_width = True, type = "primary")
 with col4:
     back = st.button("Back", use_container_width = True)
 if back:

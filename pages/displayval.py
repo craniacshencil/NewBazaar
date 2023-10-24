@@ -75,7 +75,7 @@ with stylable_container(
     #Continue to list and finalized price input
     col1, col2, col3 = st.columns([5, 2, 4])
     with col2:
-        to_list = st.button("  Proceed to list  ", on_click = enable_price_entry)   
+        to_list = st.button("Proceed to list", on_click = enable_price_entry)   
 if st.session_state.price_entry:
     st.divider() 
     col1, col2, col3 = st.columns([2, 7, 2])
@@ -91,7 +91,7 @@ if st.session_state.price_entry:
         col1, col2, col3, col4 = st.columns([2, 1, 1, 2])
         with col2:
             st.write(" ")
-            finale = st.button("Upload images", use_container_width = True)
+            finale = st.button("Upload images", use_container_width = True, type = 'primary')
             if finale:
                 st.session_state['Price'] = price
                 with st.spinner("Redirecting to upload images...."):
