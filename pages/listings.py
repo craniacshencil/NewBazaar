@@ -149,7 +149,7 @@ for car in cars:
                 i = i + 1
                 if view:
                     st.session_state['car'] = car
-                    switch_page('experiments')
+                    switch_page('detailedlisting')
 # with col3:
 #     st.write(len(transmission))                 
     

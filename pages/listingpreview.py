@@ -151,7 +151,7 @@ with col2:
 if(wishlist):
 	st.toast("Added to wishlist")
 if(emi):
-    switch_page("loan")
+    switch_page("loanpreview")
 #  values = [brand, yr, model, variant, fueltype
 #          , transmission, owner, kms]
 
@@ -206,7 +206,6 @@ finish = st.columns(5)[2].button("Confirm listing")
 if(finish):
     client = MongoClient("localhost", 27017)
     db = client.carbazaar
-    listing = db.listings
 
     #  values = [brand, yr, model, variant, fueltype
     #          , transmission, owner, kms]

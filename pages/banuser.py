@@ -47,3 +47,32 @@ color_name = "red-70",
 )
 
 #Content
+
+# Load the YAML file
+with open('config.yaml', 'r') as file:
+    config = yaml.load(file, Loader=yaml.FullLoader)
+
+# Extract usernames
+usernames = list(config.get('credentials', {}).get('usernames', {}).keys())
+
+# Remove the 'admin2' username if it exists
+if 'admin2' in usernames:
+    usernames.remove('admin2')
+
+# Select the username you want to delete
+selected_username = st.selectbox("Select username of user to ban: ", usernames)
+
+if st.button("Confirm Ban"):
+    # Check if the selected username exists in the list
+    if selected_username in usernames:
+    # Remove the user details associated with the selected username
+        del config['credentials']['usernames'][selected_username]
+        print(f"User '{selected_username}' has been deleted.")
+    else:
+        print(f"User '{selected_username}' not found in the list of usernames.")
+    # Save the modified data back to the YAML file
+    with open('config.yaml', 'w') as file:
+        yaml.dump(config, file, default_flow_style=False)
+
+
+

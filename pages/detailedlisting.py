@@ -17,6 +17,7 @@ import shutil
 import yaml
 from yaml.loader import SafeLoader
 import streamlit_authenticator as stauth
+from bson.objectid import ObjectId
 
 
 #Collapsing and removing sidebar, adding header image
@@ -54,13 +55,14 @@ image = Image.open("images\\header.png")
 image = image.resize((300, int(300 * image.height / image.width)))
 st.columns(3)[1].image(image)
 colored_header(
-label = "Confirm Listing: ",
+label = "Selected Listing: ",
 description = " ",
 color_name = "red-70",
 )
 
 #Bringing in the required car
 car = st.session_state['car']
+phonenumber = st.session_state['phonenumber']
 
 #Generating carousel out of urls
 col1, col2 = st.columns([2, 1], gap = "small")
@@ -89,47 +91,59 @@ with col2:
     ):
 
         st.markdown(f"##### {car['Myear']} {car['Brand'].capitalize()} {car['Model'].capitalize()} {car['Variant'].capitalize()}")
-        st.markdown(f"###### {int(car['Kms'] / 1e3)}k kms · {car['Fueltype'].capitalize()} · {car['Transmission'][5]} · {car['Ownerno']} owner ")
+        st.markdown(f"###### {int(car['Kms'] / 1e3)}k kms · {car['Fueltype'].capitalize()} · {car['Transmission']} · {car['Ownerno']} owner ")
         col1, col2, col3 = st.columns([1, 40, 1])
         with col2:
             st.divider()
         col1, col2 = st.columns([1, 3])
         with col2:
-            st.markdown(f"####  Price: ₹{price} Lakh")
-            # st.caption("(Fixed On-road price)")
+            st.markdown(f"####  Price: ₹{car['Priceinlakh']} Lakh")
         col1, col2, col3 = st.columns([1, 40, 1])
         with col2:
             st.divider()
-        col0, col1, col2 = st.columns(3)
+        col0, col1, col2 = st.columns([2, 3, 3])
         with col0:
             wishlist = st.button("Wishlist", use_container_width = True)
         with col2:
             emi = st.button("Calculate EMI", use_container_width = True)
         with col1:
-            st.link_button("Contact Seller on Whatsapp", f"https://wa.me/{phonenumber}", type = "primary", use_container_width = True)
+            st.link_button("Contact Seller", f"https://wa.me/{car['Phonenumber']}", type = "primary", use_container_width = True)
+
+#Wishlisting the car
 if(wishlist):
-	st.toast("Added to wishlist")
+    client = MongoClient("localhost", 27017)
+    db = client.carbazaar
+    wishlist_collection = db.wishlist
+    wishlist_entries = list(db.wishlist.find())
+    wishlist_doc = {
+        "User" : st.session_state['username'],
+        "id_in_post" : car['_id']
+    }
+    post_ids = [entry.get('id_in_post') for entry in wishlist_entries]
+    for i in range(0, len(post_ids)):
+        if car['_id'] == post_ids[i]:
+            st.toast("Already wishlisted.")
+        else:
+            st.toast("Wishlisted Sucessfully")
+            wishlist_collection.insert_one(wishlist_doc).inserted_id
+
+#Switching to the loan page
 if(emi):
-    switch_page("loan")
-#  values = [brand, yr, model, variant, fueltype
-#          , transmission, owner, kms]
+    switch_page("loanbuyer")
 
 #Displaying Basic details of the car
-df = pd.read_csv("data\\data_entry_train.csv")
-df = df.loc[(df.model == values[2]) & (df.variant == values[3])]
-
-valve_config = df['Valve Configuration'].mode()[0]
-kerb_wt = df['Kerb Weight'].mode()[0]
-seats = df['Seats'].mode()[0]
-max_torque = df['Max Torque Delivered'].mode()[0]
-body = df['body'].mode()[0]
-gearbox = df['Gear Box'].mode()[0]
-steering_type = df['Steering Type'].mode()[0]
-F_brake = df['Front Brake Type'].mode()[0]
-R_brake = df['Rear Brake Type'].mode()[0]
-tyres = df['Tyre Type'].mode()[0]
-Fuelsupplysystem = df['Fuel Supply System'].mode()[0]
-tread = df['Tread'].mode()[0]
+valve_config = car['Valveconfiguration']
+kerb_wt = car['Kerbweight']
+seats = car['Seats']
+max_torque = car['Maxtorque']
+body = car['Body']
+gearbox = car['Gearbox']
+steering_type = car['Steeringtype']
+F_brake = car['Frontbrake']
+R_brake = car['Rearbrake']
+tyres = car['Tyres']
+Fuelsupplysystem = car['Fuelsupplysystem']
+tread = car['Tread']
 
 st.divider()
 with stylable_container(
@@ -160,45 +174,7 @@ with stylable_container(
     my_grid.text_input(label = "Valve Configuration", value = valve_config, disabled = True)
     my_grid.text_input(label = "Kerb Weight", value = f"{str(int(kerb_wt))}", disabled = True)
 
-#Go Back to Dashboard and adding the listing to Database
-finish = st.columns(5)[2].button("Confirm listing")
-if(finish):
-    client = MongoClient("localhost", 27017)
-    db = client.carbazaar
-    listing = db.listings
-
-    #  values = [brand, yr, model, variant, fueltype
-    #          , transmission, owner, kms]
-    post = {
-        "Seller" : name,
-        "Phonenumber" : phonenumber,
-        "Priceinlakh" : price,
-        "Images" : image_urls,
-        "Brand" : values[0], 
-        "Myear" : int(values[1]), 
-        "Model" : values[2],
-        "Variant" : values[3],
-        "Fueltype" : values[4],
-        "Transmission" : values[5],
-        "Ownerno" : values[6],
-        "Kms" : values[7],
-        "Valveconfiguration" : valve_config,
-        "Kerbweight" : int(kerb_wt),
-        "Seats" : int(seats),
-        "Maxtorque" : int(max_torque),
-        "Body" : body,
-        "Gearbox" : gearbox,
-        "Steeringtype" : steering_type,
-        "Frontbrake" : F_brake,
-        "Rearbrake" : R_brake,
-        "Tyres" : tyres,
-        "Fuelsupplysystem" : Fuelsupplysystem,
-        "Tread" : int(tread)
-    }
-
-    listings = db.post
-    listings.insert_one(post).inserted_id
-    st.success("Your Car has been successfully listed")
-    st.toast("Redirecting to dashboard in 3 sec..")
-    time.sleep(3)
-    switch_page("dashboard")
+#Go Back to the listings page
+back = st.columns(5)[2].button("Back to listings")
+if(back):
+    switch_page("listings")
