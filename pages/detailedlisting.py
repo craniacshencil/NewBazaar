@@ -120,12 +120,15 @@ if(wishlist):
         "id_in_post" : car['_id']
     }
     post_ids = [entry.get('id_in_post') for entry in wishlist_entries]
+    flag = 1
     for i in range(0, len(post_ids)):
         if car['_id'] == post_ids[i]:
             st.toast("Already wishlisted.")
-        else:
-            st.toast("Wishlisted Sucessfully")
-            wishlist_collection.insert_one(wishlist_doc).inserted_id
+            flag = 0
+            break
+    if flag == 1:
+        st.toast("Wishlisted Sucessfully")
+        wishlist_collection.insert_one(wishlist_doc).inserted_id
 
 #Switching to the loan page
 if(emi):
