@@ -30,7 +30,7 @@ st.columns(3)[1].image("images\\header.png",use_column_width="auto")
 
 name, authentication_status, username= authenticator.login('Login', 'main')
 if username == "admin2":
-    switch_page("admin")
+    switch_page("banuser")
 if authentication_status:
     authenticator.logout('Logout', 'main')
     # st.write(f'Welcome *{name}*')

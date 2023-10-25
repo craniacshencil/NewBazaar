@@ -56,26 +56,19 @@ if nav_bar == "Wishlist":
 if nav_bar == "Check Valuation":
     switch_page("valuation")
 
-#Content
-st.header("Listings", divider = "red")
-col1, col2, col3, col4 = st.columns([0.15, 0.25, 0.25, 0.25])
-df = pd.read_csv("data\\data_entry_train.csv")
-
-with col1:
-    st.subheader("Filters")
-    st.slider(label = "Price Range (in lacs)", min_value = round(df.listed_price.min() / 1000), max_value = round(df.listed_price.max() / 1000), value =  (4000,120000), step = 100)
-    st.slider(label = "Year", min_value = df.myear.min(), max_value = df.myear.max(), value =  (2013,2019))
-    st.selectbox("Brand",df.oem.unique())
-    st.selectbox("Fuel Type",df.fuel.unique())
-    st.selectbox("Transmission Type",df.transmission.unique())
-
-#Adding a session state to transfer information
-st.session_state['car'] = None
-
 #MongoDB config
 client = MongoClient("localhost", 27017)
 db = client.carbazaar
 listings = db.post
+
+#Content
+st.header("Listings", divider = "red")
+lmargin, col1, col2, col3, rmargin = st.columns([0.075, 0.25, 0.25, 0.25, 0.075])
+
+#Adding a session state to transfer information
+st.session_state['car'] = None
+
+# #Display before filtering
 cars = list(listings.find())
 imgs = [car.get('Images') for car in cars]
 disp = []
@@ -101,16 +94,7 @@ for url in urls:
         new_image.paste(original_image, (x_offset, y_offset))
         disp.append(new_image)
 
-# price = [car.get('Priceinlakh') for car in cars]
-# myear = [car.get('Myear') for car in cars]
-# # brand = [car.get('Brand') for car in cars]
-# model = [car.get('Model') for car in cars]
-# variant = [car.get('Variant') for car in cars]
-# fuel = [car.get('Fueltype') for car in cars]
-# kms = [car.get('Kms') for car in cars]
-# transmission = [car.get('Transmission') for car in cars]
-
-cols = [col2, col3, col4]
+cols = [col1, col2, col3]
 i = 0
 for car in cars:
     button_key = f"button_{i}"
@@ -150,9 +134,6 @@ for car in cars:
                 if view:
                     st.session_state['car'] = car
                     switch_page('detailedlisting')
-# with col3:
-#     st.write(len(transmission))                 
-    
        
     
 
