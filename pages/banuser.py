@@ -29,9 +29,9 @@ if (not authentication_status) or (name != "admin2"):
 st.columns(3)[1].image("images/header.png",use_column_width="auto")
 
 #Adding NavBar
-nav_bar = option_menu(None, ["Dashboard", "Ban User", "Schedule Inspection"],
-    icons=['house', 'exclamation-diamond', "calendar3"],
-    menu_icon = "cast", default_index = 1, orientation = "horizontal")
+nav_bar = option_menu(None, ["Ban User", "Schedule Inspection"],
+    icons=['exclamation-diamond', "calendar3"],
+    menu_icon = "cast", default_index = 0, orientation = "horizontal")
 
 if nav_bar == "Schedule Inspection":
 	switch_page("inspection")
