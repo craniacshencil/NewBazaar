@@ -72,10 +72,10 @@ with stylable_container(
     st.header(" ")  
     st.header(" ")
 
-    #Continue to list and finalized price input
-    col1, col2, col3 = st.columns([5, 2, 4])
-    with col2:
-        to_list = st.button("Proceed to list", on_click = enable_price_entry)   
+    # #Continue to list and finalized price input
+    # col1, col2, col3 = st.columns([5, 2, 4])
+    # with col2:
+    #     to_list = st.button("Proceed to list", on_click = enable_price_entry)   
 if st.session_state.price_entry:
     st.divider() 
     col1, col2, col3 = st.columns([2, 7, 2])

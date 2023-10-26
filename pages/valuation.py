@@ -82,7 +82,7 @@ with col2:
                         df['owner_type'].unique())
         st.info("here 1 = first owner")
         kms = st.number_input("Enter kms driven: ", min_value = 0
-                        , max_value = 130000, step = 5000)
+                        , max_value = 130000, step = 1)
 
 st.session_state['kms'] = 'not set'
 if kms != 0:

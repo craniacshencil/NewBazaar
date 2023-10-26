@@ -1,4 +1,6 @@
 import streamlit as st
+import pandas as pd
+import time
 import streamlit_authenticator as stauth
 import yaml
 from streamlit_extras.switch_page_button import switch_page
@@ -55,12 +57,71 @@ st.info("This is a compulsory field")
 dummy = st.columns(7)[3].button(label = "Confirm Price", use_container_width = True)
 if dummy:
     if finalsold != None:
-        #Finding and deleting the car
-        cars.delete_one({'_id' : ObjectId(car['_id'])})
         st.success("Listing deleted")
         st.success("Thank You for using CarBazaar")
-        st.toast("Redirecting to mylistings")
-        switch_page("mylisting.py")
+        st.toast("Redirecting to My Listings in 3 seconds")
+        time.sleep(3)
+        #Converting Transmission and Fueltype back
+        if car['Transmission'] == 'manual':
+            car['Transmission'] = 0
+        else:
+                car['Transmission'] = 1
+
+        if car['Fueltype'] == 'LPG':
+                car['Fueltype'] = 0
+        if car['Fueltype'] == 'CNG':
+                car['Fueltype'] = 1
+        if car['Fueltype'] == 'Petrol':
+                car['Fueltype'] = 2
+        if car['Fueltype'] == 'Diesel':
+                car['Fueltype'] = 3
+        if car['Fueltype'] == 'Electric':
+                car['Fueltype'] = 4
+
+        if car['Ownerno'] == "1st":
+              car['Ownerno'] = 1
+        if car['Ownerno'] == "2nd":
+            car['Ownerno'] = 2
+        if car['Ownerno'] == "3rd":
+            car['Ownerno'] = 3
+        if car['Ownerno'] == "4th":
+              car['Ownerno'] = 4
+        if car['Ownerno'] == "5th":
+              car['Ownerno'] = 5
+        if car['Ownerno'] == "6th":
+              car['Ownerno'] = 6    
+        #Adding cardata to the dataset, finding and deleting the car
+        temp = pd.read_csv("data//train3.csv")
+        search_data = temp.loc[(temp['model'] == car['Model'])
+                            & (temp['variant'] == car['Variant'])
+                        ]
+        tc = temp['Turbo Charger'].mode()[0]
+        kw = temp['Kerb Weight'].mean()
+        dt = temp['Drive Type'].mode()[0]
+        seats = temp['Seats'].mode()[0]
+        tspeed = temp['Top Speed'].mean()
+        acc = temp['Acceleration'].mean()
+        doors = temp['Doors'].mode()[0]
+        cvolume = temp['Cargo Volume'].mean()
+        maxTorque = temp['Max Torque Delivered'].mean()
+        measure = temp['avg_measure'].mean()
+        feat = temp['Features'].mode()[0]
+        valves = temp['Valves'].mode()[0]
+        tread = temp['Tread'].mean()
+
+        car_values = [
+            car['Myear'], car['Transmission'],
+            car['Fueltype'], car['Kms'],
+            tc, kw, dt, seats, tspeed, acc, doors,
+            cvolume, car['Ownerno'], maxTorque,
+            finalsold * 1e5, measure, feat, valves, tread
+        ]
+
+        df = pd.read_csv("data//pred_data.csv")
+        df.loc[len(df), :] = car_values
+        df.to_csv("pred_data.csv", index = False)
+        cars.delete_one({'_id' : ObjectId(car['_id'])})
+        switch_page("mylisting")
     else:
         st.error("Enter a price")
         
