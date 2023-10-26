@@ -50,7 +50,12 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
+#Logout
+colspace, colspace2, column1 = st.columns((0.1, 0.7, 0.2))
 
+with column1:
+    if st.session_state["authentication_status"]:
+        authenticator.logout(f'{name} Logout', 'main', key='unique_key')
 image = Image.open("images\\header.png")
 image = image.resize((300, int(300 * image.height / image.width)))
 st.columns(3)[1].image(image)

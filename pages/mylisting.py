@@ -38,6 +38,14 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
+
+#Logout
+colspace, colspace2, column1 = st.columns((0.1, 0.7, 0.2))
+
+with column1:
+    if st.session_state["authentication_status"]:
+        authenticator.logout(f'{name} Logout', 'main', key='unique_key')
+        
 st.columns(3)[1].image("images\\header.png" ,use_column_width="auto")
 
 #NavBar config

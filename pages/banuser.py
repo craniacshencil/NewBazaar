@@ -25,16 +25,15 @@ name = st.session_state["name"]
 if (not authentication_status) or (name != "admin2"):
     switch_page("Login")
 
+#Logout
+colspace, colspace2, column1 = st.columns((8, 10, 2))
+
+with column1:
+    if st.session_state["authentication_status"]:
+        authenticator.logout(f'{name} Logout', 'main', key='unique_key')
+
 #Header image and text
 st.columns(3)[1].image("images/header.png",use_column_width="auto")
-
-#Adding NavBar
-nav_bar = option_menu(None, ["Ban User", "Schedule Inspection"],
-    icons=['exclamation-diamond', "calendar3"],
-    menu_icon = "cast", default_index = 0, orientation = "horizontal")
-
-if nav_bar == "Schedule Inspection":
-	switch_page("inspection")
 
 #Header Text
 colored_header(
