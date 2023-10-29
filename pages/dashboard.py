@@ -106,3 +106,7 @@ with col2:
     if ((clicked == 1) & number_exists):
           switch_page("valuation")
 
+#Extra
+exp = st.button("exp")
+if exp:
+    switch_page("finalexperiment")

@@ -96,7 +96,7 @@ with col2:
     ):
 
         st.markdown(f"##### {car['Myear']} {car['Brand'].capitalize()} {car['Model'].capitalize()} {car['Variant'].capitalize()}")
-        st.markdown(f"###### {int(car['Kms'] / 1e3)}k kms · {car['Fueltype'].capitalize()} · {car['Transmission']} · {car['Ownerno']} owner ")
+        st.markdown(f"###### {int(car['Kms'] / 1e3)}k kms · {car['Fueltype'].capitalize()} · {car['Transmission']} · {car['Ownerno']} owner · by {car['Seller']}")
         col1, col2, col3 = st.columns([1, 40, 1])
         with col2:
             st.divider()

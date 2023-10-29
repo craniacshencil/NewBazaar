@@ -136,7 +136,7 @@ with col2:
     ):
 
         st.markdown(f"##### {values[1]} {values[0].capitalize()} {values[2].capitalize()} {values[3]}")
-        st.markdown(f"###### {int(values[7] / 1e3)}k kms · {values[4]} · {values[5]} · {values[6]} owner ")
+        st.markdown(f"###### {int(values[7] / 1e3)}k kms · {values[4]} · {values[5]} · {values[6]} owner · by {name}")
         col1, col2, col3 = st.columns([1, 40, 1])
         with col2:
             st.divider()

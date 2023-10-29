@@ -49,6 +49,7 @@ st.header("Delete listing", divider = "red")
 client = MongoClient("localhost", 27017)
 db = client.carbazaar
 cars = db.post
+wishlists = db.wishlist
 car = st.session_state['deletedcar']
 #content
 finalsold = st.number_input(f"Enter the final selling price of your {car['Myear']} {car['Brand']} {car['Model']} {car['Variant']}",
@@ -121,6 +122,7 @@ if dummy:
         df.loc[len(df), :] = car_values
         df.to_csv("pred_data.csv", index = False)
         cars.delete_one({'_id' : ObjectId(car['_id'])})
+        wishlists.delete_one({'id_in_post' : ObjectId(car['_id'])})
         switch_page("mylisting")
     else:
         st.error("Enter a price")

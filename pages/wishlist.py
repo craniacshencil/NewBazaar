@@ -137,7 +137,7 @@ for car in cars:
                 image = disp[i]
                 st.image(disp[i], use_column_width = "always")
                 st.markdown(f"#### {carmyear} {carbrand} {carmodel} {carvariant}")
-                st.caption(f"{carfuel} · {cartransmission} · {int(car['Kms'] / 1e3)}k kms ")
+                st.caption(f"{carfuel} · {cartransmission} · {int(car['Kms'] / 1e3)}k kms · by {car['Seller']}")
             col1, col2 = st.columns([0.6, 0.4])
             with col1:
                 st.markdown(f"### ₹{carprice} Lakh")
@@ -148,3 +148,4 @@ for car in cars:
                 if view:
                     st.session_state['car'] = car
                     switch_page('detailedlisting')
+
