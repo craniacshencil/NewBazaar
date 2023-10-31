@@ -121,7 +121,7 @@ if(wishlist):
     wishlist_collection = db.wishlist
     wishlist_entries = list(db.wishlist.find())
     wishlist_doc = {
-        "User" : st.session_state['username'],
+        "User" : st.session_state['name'],
         "id_in_post" : car['_id']
     }
     post_ids = [entry.get('id_in_post') for entry in wishlist_entries]

@@ -5,7 +5,8 @@ from streamlit_extras.switch_page_button import switch_page
 from streamlit_extras.colored_header import colored_header
 from yaml.loader import SafeLoader
 from streamlit_option_menu import option_menu
-
+from pymongo import MongoClient
+import pymongo
 
 #Check Login Status
 with open('config.yaml') as file:
@@ -42,7 +43,11 @@ description = "",
 color_name = "red-70",
 )
 
-#Content
+#Initilazing mongoDb connection
+client = MongoClient("localhost", 27017)
+db = client.CarBazaar
+listings = db.post
+wishlists = db.wishlist
 
 # Load the YAML file
 with open('config.yaml', 'r') as file:
@@ -64,6 +69,8 @@ if st.button("Confirm Ban"):
     # Remove the user details associated with the selected username
         del config['credentials']['usernames'][selected_username]
         print(f"User '{selected_username}' has been deleted.")
+        listings.delete_many({'Seller' : name})
+        wishlists.delete_many({'User' : name})
     else:
         print(f"User '{selected_username}' not found in the list of usernames.")
     # Save the modified data back to the YAML file
