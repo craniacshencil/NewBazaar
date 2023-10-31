@@ -52,8 +52,8 @@ with column1:
 st.columns(3)[1].image("images\\header.png",use_column_width="auto")
 
 #NavBar config
-nav_bar = option_menu(None, ["Home", "Check Valuation", "Buy", "My Listings", "Wishlist"],
-    icons=["house-fill", 'cash-coin', "car-front", "bag", "bookmark-heart-fill"],
+nav_bar = option_menu(None, ["Home", "Check Valuation", "Buy", "My Listings", "Wishlist", "Book Inspection"],
+    icons=["house-fill", 'cash-coin', "car-front", "bag", "bookmark-heart-fill", "tools"],
     menu_icon="cast", default_index = 2, orientation="horizontal")
 if nav_bar == "Home":
     switch_page("dashboard")
@@ -63,6 +63,9 @@ if nav_bar == "Wishlist":
     switch_page("wishlist")
 if nav_bar == "Check Valuation":
     switch_page("valuation")
+if nav_bar == "Book Inspection":
+    switch_page("bookinspection")
+
 
 #MongoDB config
 client = MongoClient("localhost", 27017)
@@ -75,32 +78,16 @@ lmargin, col1, col2, col3, rmargin = st.columns([0.075, 0.25, 0.25, 0.25, 0.075]
 
 #Adding a session state to transfer information
 st.session_state['car'] = None
-
-# #Display before filtering
 cars = list(listings.find())
-imgs = [car.get('Images') for car in cars]
-disp = []
-urls = [img[0] for img in imgs]
-for url in urls:
-    response = requests.get(url, stream=True)
+
+#Fetching the display images
+display_images = []
+display_images_urls = [car.get("Displayimage") for car in cars]
+for url in display_images_urls:
+    response = requests.get(url, stream = True)
     if response.status_code == 200:
-        original_image = Image.open(BytesIO(response.content)) 
-        new_aspect_ratio = 5/3 
-        original_aspect_ratio = original_image.width / original_image.height
-
-        if original_aspect_ratio > new_aspect_ratio:
-            new_width = original_image.width
-            new_height = int(new_width / new_aspect_ratio)
-        else:
-            new_height = original_image.height
-            new_width = int(new_height * new_aspect_ratio)
-
-        new_image = Image.new("RGB", (new_width, new_height), (125, 125, 125))
-
-        x_offset = (new_width - original_image.width) // 2
-        y_offset = (new_height - original_image.height) // 2
-        new_image.paste(original_image, (x_offset, y_offset))
-        disp.append(new_image)
+        display_image = Image.open(BytesIO(response.content))
+        display_images.append(display_image)
 
 cols = [col1, col2, col3]
 i = 0
@@ -128,8 +115,7 @@ for car in cars:
         ):
             col1, col2 = st.columns([0.999, 0.001])
             with col1:
-                image = disp[i]
-                st.image(disp[i], use_column_width = "always")
+                st.image(display_images[i], use_column_width = "always")
                 st.markdown(f"#### {carmyear} {carbrand} {carmodel} {carvariant}")
                 st.caption(f"{carfuel} · {cartransmission} · {int(car['Kms'] / 1e3)}k kms · by {car['Seller']}")
             col1, col2 = st.columns([0.7, 0.3])

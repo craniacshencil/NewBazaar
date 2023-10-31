@@ -59,8 +59,8 @@ if "phone_number" in config["credentials"]["usernames"][username]:
     st.session_state['phonenumber'] = config["credentials"]["usernames"][username]["phone_number"]
 
 #NavBar config
-nav_bar = option_menu(None, ["Home", "Check Valuation", "Buy", "My Listings", "Wishlist"],
-    icons=["house-fill", 'cash-coin', "car-front", "bag", "bookmark-heart-fill"],
+nav_bar = option_menu(None, ["Home", "Check Valuation", "Buy", "My Listings", "Wishlist", "Book Inspection"],
+    icons=["house-fill", 'cash-coin', "car-front", "bag", "bookmark-heart-fill", "tools"],
     menu_icon="cast", default_index = 0, orientation="horizontal")
 if ((nav_bar == "Wishlist") & (number_exists)):
     switch_page("wishlist")
@@ -70,6 +70,8 @@ if ((nav_bar == "Check Valuation") & (number_exists)):
     switch_page("valuation")
 if ((nav_bar == "Buy") & (number_exists)):
     switch_page("listings")
+if((nav_bar == "Book Inspection") & (number_exists)):
+    switch_page("bookinspection")
 if ((nav_bar == "Wishlist") | (nav_bar == "Check Valuation") | (nav_bar == "Buy") | (nav_bar == "My Listings") & (not number_exists)):
     st.error("Enter your phone number")
 

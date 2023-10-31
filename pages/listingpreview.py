@@ -17,6 +17,8 @@ import shutil
 import yaml
 from yaml.loader import SafeLoader
 import streamlit_authenticator as stauth
+import requests 
+from io import BytesIO
 
 
 #Collapsing and removing sidebar, adding header image
@@ -92,6 +94,7 @@ price = st.session_state['Price']
 values = st.session_state['values']
 name = st.session_state['name']
 phonenumber = st.session_state['phonenumber']
+display_image = st.session_state['Display_image']
 
 if values[5] == 0:
     values[5] = "Manual"
@@ -205,7 +208,7 @@ with stylable_container(
     my_grid.text_input(label = "Rear Brake", value = R_brake.capitalize(), disabled = True)
     my_grid.text_input(label = "Tread", value = f"{str(int(tread))}", disabled = True)
     my_grid.text_input(label = "Valve Configuration", value = valve_config, disabled = True)
-    my_grid.text_input(label = "Kerb Weight", value = f"{str(int(kerb_wt))}", disabled = True)
+    my_grid.text_input(label = "Kerb Weight", value = f"{str(int(kerb_wt))}", disabled = True)    
 
 #Go Back to Dashboard and adding the listing to Database
 finish = st.columns(5)[2].button("Confirm listing")
@@ -220,6 +223,7 @@ if(finish):
         "Phonenumber" : phonenumber,
         "Priceinlakh" : price,
         "Images" : image_urls,
+        "Displayimage" : display_image,
         "Brand" : values[0], 
         "Myear" : int(values[1]), 
         "Model" : values[2],

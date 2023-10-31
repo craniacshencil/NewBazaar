@@ -10,6 +10,8 @@ import imgbbpy
 import yaml
 from yaml.loader import SafeLoader
 import streamlit_authenticator as stauth
+import requests 
+from io import BytesIO
 
 #Checking login status
 with open('config.yaml') as file:
@@ -56,6 +58,7 @@ color_name = "red-70",
 )
 
 #Creating session state to display images efficiently
+st.session_state['Display_image'] = "not set"
 st.session_state['img_list'] = []
 if 'images_displayed' not in st.session_state:
     st.session_state['images_displayed'] = False
@@ -65,8 +68,8 @@ def set_images_displayed():
 
 #URL generator function
 image_urls = []
+client = imgbbpy.SyncClient('4ca08e789920c7f74605a4a461528c64')
 def urlgen(image_urls, img_path):
-    client = imgbbpy.SyncClient('4ca08e789920c7f74605a4a461528c64')
     image = client.upload(file = img_path, expiration = 2592000)#Link valid for 30 days since creation
     image_urls.append(image.url)
     st.success("Process complete.")
@@ -92,7 +95,6 @@ if st.session_state['images_displayed']:
         urlgen(image_urls, imgpath)
         with col_no[i]:
             st.image(disp_image, caption="Uploaded Image", use_column_width="never")
-        
 
 #Button for finishing upload
 st.session_state['imageurls'] = []#initializing session state variable
@@ -108,7 +110,31 @@ if finish:
     if st.session_state['images_displayed']:
         # st.session_state['images_displayed'] = None
         st.session_state['imageurls'] = image_urls
-        switch_page("listingpreview")
+        #Creating the display image for listings, my listings, wishlist and book inspection page
+        url = image_urls[0]
+        response = requests.get(url, stream=True)
+        if response.status_code == 200:
+            original_image = Image.open(BytesIO(response.content)) 
+            new_aspect_ratio = 5/3 
+            original_aspect_ratio = original_image.width / original_image.height
+
+            if original_aspect_ratio > new_aspect_ratio:
+                new_width = original_image.width
+                new_height = int(new_width / new_aspect_ratio)
+            else:
+                new_height = original_image.height
+                new_width = int(new_height * new_aspect_ratio)
+
+            new_image = Image.new("RGB", (new_width, new_height), (125, 125, 125))
+
+            x_offset = (new_width - original_image.width) // 2
+            y_offset = (new_height - original_image.height) // 2
+            new_image.paste(original_image, (x_offset, y_offset))
+            dispimgpath = f"temp_storage\\dispimage.jpg"
+            new_image.save(dispimgpath)
+            new_image = client.upload(file = dispimgpath, expiration = 2592000)#Link valid for 30 days since creation
+            st.session_state['Display_image'] = new_image.url
+            switch_page("listingpreview")
     else:
         st.error("Confirm the Images first")
 
