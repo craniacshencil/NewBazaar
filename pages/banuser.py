@@ -8,6 +8,17 @@ from streamlit_option_menu import option_menu
 from pymongo import MongoClient
 import pymongo
 
+# Remove sidebar via CSS and adding header image
+st.markdown(
+    """
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+""",
+    unsafe_allow_html=True,
+)
 #Check Login Status
 with open('config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
@@ -34,18 +45,22 @@ with column1:
         authenticator.logout(f'{name} Logout', 'main', key='unique_key')
 
 #Header image and text
-st.columns(3)[1].image("images/header.png",use_column_width="auto")
+st.columns(3)[1].image("images\\header.png",use_column_width="auto")
+
+#Nav-bar
+nav_bar = option_menu(None, ["Inspection Approval", "Ban Users"],
+    icons=["tools", "exclamation-diamond"],
+    menu_icon="cast", default_index = 1, orientation="horizontal")
+if nav_bar == "Inspection Approval":
+    switch_page("adminapproval")
 
 #Header Text
-colored_header(
-label = "User Ban",
-description = "",
-color_name = "red-70",
-)
+st.header("User Ban", divider = "red")
+
 
 #Initilazing mongoDb connection
 client = MongoClient("localhost", 27017)
-db = client.CarBazaar
+db = client.carbazaar
 listings = db.post
 wishlists = db.wishlist
 

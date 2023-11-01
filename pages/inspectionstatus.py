@@ -58,7 +58,6 @@ st.columns(3)[1].image("images\\header.png" ,use_column_width="auto")
 car = st.session_state['Car_for_inspection']
 
 #DB variables, and their placeholders
-adminsnote = ""
 inspection_date = ""
 inspection_time = ""
 
@@ -148,19 +147,20 @@ with column2:
                 "User" : name,
                 "id_in_post" : car['_id'],
                 "Inspection date" : date,
-                "Inspection time" : time_,
-                "Admin's note" : ""
+                "Inspection time" : time_
             }
             appointments.insert_one(appointment)
-            update = {"$set": {"Inspectionstatus": "Applied for inspection"}}
+            update = {"$set": {"Inspectionstatus": "Applied for Inspection"}}
             filter = {"_id" : car['_id']}
             listings.update_one(filter, update)
 
+            st.toast("We have recorded your booking")
+            time.sleep(1)
             st.toast("Redirecting to dashboard in 3 seconds")
             time.sleep(3)
             switch_page("dashboard")
 
-    if carinspection == "Applied for inspection":
+    if carinspection == "Applied for Inspection":
         progress = 25
         st.info("Your application is being processed.")
 
@@ -168,18 +168,19 @@ with column2:
         progress = 46
         st.info("Your car has been approved by admin and is sent for inspection.")
         #######MongoCode#########
-        car_for_admin_approval = appointments.find({"id_in_post" : car['_id']})
+        car_for_admin_approval = appointments.find_one({"id_in_post" : car['_id']})
         inspection_date = car_for_admin_approval.get("Inspection date")
-        inspection_time = car_for_admin_approval.get("Inspected time")
-        st.write(f"Confirmed!! Your inspection is on {inspection_date} at {inspection_time}")
+        inspection_time = car_for_admin_approval.get("Inspection time")
+        st.write("")
+        lmargin, textcol = st.columns([0.12, 0.88])
+        with textcol:
+            st.subheader(f"Confirmed!! Your inspection is on {inspection_date} at {inspection_time}")
     
     if carinspection == "Admin Approval Denied":
         progress = 5
         st.error("Admin has denied your booking for inspection")
-        st.markdown("#### Admin's note: ")
-        car_denied_by_admin = appointments.find({'id_in_post' : car['_id']})
-        adminsnote = car_denied_by_admin.get("Admin's note")
-        st.write(adminsnote)
+        st.info("Possibly because of: Overpacked warehouses, fully booked timeslots etc.")
+        car_denied_by_admin = appointments.find_one({'id_in_post' : car['_id']})
         st.divider()
         st.markdown("##### Book another inspection?")
         datecol, timecol = st.columns(2)
@@ -189,18 +190,21 @@ with column2:
             time_ = st.time_input(label = "Choose time", step = 1800)
         confirm = st.columns(3)[1].button("Confirm", use_container_width = True)
         if confirm:
+            date = date.strftime("%d/%m/%Y")
+            time_ = time_.strftime("%H:%M")
             ####MongoCode#####
             appointment = {
                 "User" : name,
                 "id_in_post" : car['_id'],
                 "Inspection date" : date,
-                "Inspection time" : time_,
-                "Admin's note" : ""
+                "Inspection time" : time_
             }
             appointments.insert_one(appointment)
-            update = {"$set": {"Inspectionstatus": "Applied for inspection"}}
+            update = {"$set": {"Inspectionstatus": "Applied for Inspection"}}
             filter = {"_id" : car['_id']}
             listings.update_one(filter, update)
+            st.toast("We have recorded your booking")
+            time.sleep(1)
             st.toast("Redirecting to dashboard in 3 seconds")
             time.sleep(3)
             switch_page("dashboard")
