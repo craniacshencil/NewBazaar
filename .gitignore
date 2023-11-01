@@ -1,5 +1,5 @@
 ML/catboost_info
-config.yaml
+./config.yaml
 ML/catboost_info/catboost_training.json
 ML/catboost_info/learn_error.tsv
 ML/catboost_info/test_error.tsv

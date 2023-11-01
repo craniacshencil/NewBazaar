@@ -224,6 +224,7 @@ if(finish):
         "Priceinlakh" : price,
         "Images" : image_urls,
         "Displayimage" : display_image,
+        "Inspectionstatus" : "Not Inspected",
         "Brand" : values[0], 
         "Myear" : int(values[1]), 
         "Model" : values[2],

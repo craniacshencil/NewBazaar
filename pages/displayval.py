@@ -97,8 +97,8 @@ if st.session_state.price_entry:
                 with st.spinner("Redirecting to upload images...."):
                     time.sleep(2)
                     switch_page("imgupload")
-        with col3:
-            st.write(" ")
-            back = st.button("Back", use_container_width = True)
-            if back:
-                switch_page("valuation")
+            with col3:
+                st.write(" ")
+                back = st.button("Back", use_container_width = True)
+                if back:
+                    switch_page("valuation")

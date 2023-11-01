@@ -91,7 +91,7 @@ emi , payable_interest, total_amount = loan_amount(principal, interest_rate, ter
 with col2:
     labels = ['Down Payment', 'Principal Loan Amount', 'Interest Payable']
     label_val = [full_price - principal, principal, payable_interest]
-    colors = ["#c48c12", "#ba3a3a", "#d45004"]
+    colors = ["#c48c12", "#ba3a3a", "#4f1b17"]
     fig = go.Figure(data = [go.Pie(labels = labels, values = label_val, hole = 0.5)])
     # fig = px.pie(names = labels, values = label_val, hole = 0.5, title = 'Finance Breakdown')
     fig.update_traces(marker=dict(colors=colors))
