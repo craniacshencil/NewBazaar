@@ -91,6 +91,7 @@ with stylable_container(
             col1, col2 = st.columns([0.98, 0.02])
             with col1:
                 colored_header(label = "Benefits of having your car inspected: ", color_name = "red-70", description = "")
+                st.write(" ")
                 st.markdown("##### - Thorough Inspection: Your car will be comprehensively inspected by trained professionals \
                 covering various aspects, including the engine, transmission, brakes, suspension and more")
                 st.write(" ")

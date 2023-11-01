@@ -13,6 +13,7 @@ from io import BytesIO
 from streamlit_extras.stylable_container import stylable_container
 from streamlit_extras.colored_header import colored_header
 import time
+import datetime
 
 #Check Login status
 with open('config.yaml') as file:
@@ -65,6 +66,7 @@ inspection_time = ""
 client = MongoClient("localhost", 27017)
 db = client.carbazaar
 appointments = db.appointment
+listings = db.post
 
 #Content
 st.header("Inspection Status: ", divider= "red")
@@ -102,55 +104,69 @@ with col1:
         with col1:
             st.image(display_image, use_column_width = "always")
             st.markdown(f"#### {carmyear} {carbrand} {carmodel} {carvariant}")
-            st.caption(f"{carfuel} · {cartransmission} · {int(car['Kms'] / 1e3)}k kms · by {car['Seller']}")
-            st.markdown(f"### ₹{carprice} Lakh")
             st.write("")
+            st.caption(f"{carfuel} · {cartransmission} · {int(car['Kms'] / 1e3)}k kms · by {car['Seller']}")
+            st.write("")
+            st.markdown(f"## ₹{carprice} Lakh")
+            st.subheader("")
 
 
 with column2:
-    st.subheader("Inspection Timeline")
+    colored_header(label = "Inspection Timeline", description = "", color_name = "red-70")
     st.header("")
-    col1, col2, col3, col4 = st.columns([0.22, 0.31, 0.29, 0.18])
+    col1, col2, col3, col4, col5 = st.columns([.15,.18,.2,.2,.15])
     with col1:
         st.write("Not Inspected")
     with col2:
-        st.write("Admin Approval Granted")
+        st.write("Applied for Inspection")
     with col3:
-        st.write("Inspection underway")
+        st.write("Admin Approval Granted")
     with col4:
+        st.write("Inspection underway")
+    with col5:
         st.write("Inspection Successful")
     
-    inspection_status_bar = st.progress(0.0, text = " ")
+    inspection_status_bar = st.progress(0, text = " ")
     
     if carinspection == "Not Inspected":
         progress = 5
         st.error("Your car has not been inspected.")
         st.divider()
-        st.write("When do you want your car to be inspected?")
+        st.markdown("##### When do you want your car to be inspected?")
         datecol, timecol = st.columns(2)
         with datecol:
-            date = st.date_input(label = "Choose date")
+            date = st.date_input(label = "Choose date", min_value = datetime.datetime.now(), format = "DD/MM/YYYY")
         with timecol:    
-            time_ = st.time_input(label = "Choose time")
+            time_ = st.time_input(label = "Choose time", step = 1800)
 
         confirm = st.columns(3)[1].button("Confirm", use_container_width = True)
         if confirm:
+            date = date.strftime("%d/%m/%Y")
+            time_ = time_.strftime("%H:%M")
             ####MongoCode#####
             appointment = {
                 "User" : name,
                 "id_in_post" : car['_id'],
-                "Inspection date" : inspection_date,
-                "Inspection time" : inspection_time,
+                "Inspection date" : date,
+                "Inspection time" : time_,
                 "Admin's note" : ""
             }
-            appointments.insert_one(appointment).inserted_id
+            appointments.insert_one(appointment)
+            update = {"$set": {"Inspectionstatus": "Applied for inspection"}}
+            filter = {"_id" : car['_id']}
+            listings.update_one(filter, update)
 
             st.toast("Redirecting to dashboard in 3 seconds")
             time.sleep(3)
+            switch_page("dashboard")
+
+    if carinspection == "Applied for inspection":
+        progress = 25
+        st.info("Your application is being processed.")
 
     if carinspection == "Admin Approval Granted":
-        progress = 32
-        st.exception("Your car has been approved by admin and is sent for inspection.")
+        progress = 46
+        st.info("Your car has been approved by admin and is sent for inspection.")
         #######MongoCode#########
         car_for_admin_approval = appointments.find({"id_in_post" : car['_id']})
         inspection_date = car_for_admin_approval.get("Inspection date")
@@ -158,35 +174,40 @@ with column2:
         st.write(f"Confirmed!! Your inspection is on {inspection_date} at {inspection_time}")
     
     if carinspection == "Admin Approval Denied":
+        progress = 5
         st.error("Admin has denied your booking for inspection")
         st.markdown("#### Admin's note: ")
         car_denied_by_admin = appointments.find({'id_in_post' : car['_id']})
         adminsnote = car_denied_by_admin.get("Admin's note")
         st.write(adminsnote)
         st.divider()
-        st.write("Book another inspection?")
+        st.markdown("##### Book another inspection?")
         datecol, timecol = st.columns(2)
         with datecol:
-            date = st.date_input(label = "Choose date")
+            date = st.date_input(label = "Choose date", min_value = datetime.datetime.now(), format = "DD/MM/YYYY")
         with timecol:    
-            time_ = st.time_input(label = "Choose time")
+            time_ = st.time_input(label = "Choose time", step = 1800)
         confirm = st.columns(3)[1].button("Confirm", use_container_width = True)
         if confirm:
             ####MongoCode#####
             appointment = {
                 "User" : name,
                 "id_in_post" : car['_id'],
-                "Inspection date" : inspection_date,
-                "Inspection time" : inspection_time,
+                "Inspection date" : date,
+                "Inspection time" : time_,
                 "Admin's note" : ""
             }
-            appointments.insert_one(appointment).inserted_id
+            appointments.insert_one(appointment)
+            update = {"$set": {"Inspectionstatus": "Applied for inspection"}}
+            filter = {"_id" : car['_id']}
+            listings.update_one(filter, update)
             st.toast("Redirecting to dashboard in 3 seconds")
             time.sleep(3)
+            switch_page("dashboard")
 
 
     if carinspection == "Inspection underway":
-        progress = 62
+        progress = 69
         st.info("Our Supervisors are currently inspecting your car")
 
     if carinspection == "Inspection Successful":
