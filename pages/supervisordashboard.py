@@ -2,7 +2,6 @@ import streamlit as st
 import streamlit_authenticator as stauth
 import yaml
 from streamlit_extras.switch_page_button import switch_page
-from streamlit_extras.colored_header import colored_header
 from streamlit_extras.stylable_container import stylable_container
 from yaml.loader import SafeLoader
 from streamlit_option_menu import option_menu
@@ -137,3 +136,4 @@ else:
                         st.toast("Redirecting to continue Inspection")
                         time.sleep(1)
                         switch_page('interiorfeatures')
+
