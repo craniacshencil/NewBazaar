@@ -123,11 +123,16 @@ for car in cars:
                 st.image(display_images[i], use_column_width = "always")
                 st.markdown(f"#### {carmyear} {carbrand} {carmodel} {carvariant}")
                 st.caption(f"{carfuel} · {cartransmission} · {int(car['Kms'] / 1e3)}k kms · by {car['Seller']}")
-            col1, col2 = st.columns([0.6, 0.4])
+            col1, col2, col3 = st.columns([0.44, 0.36, 0.2])
             with col1:
                 st.markdown(f"### ₹{carprice} Lakh")
                 st.write("")
             with col2:
+                st.caption("")
+                if(car['Inspectionstatus'] == "Inspection Successful"):
+                    approved = '<h5 style="font-family:sans-serif; color:LightGreen;">(Approved✓)</h5>'
+                    st.markdown(approved, unsafe_allow_html = True)
+            with col3:
                 view = st.button(label = "View", key = button_key, use_container_width = True, type = "primary")
                 i = i + 1
                 if view:

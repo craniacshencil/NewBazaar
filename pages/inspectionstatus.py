@@ -6,7 +6,6 @@ from streamlit_option_menu import option_menu
 from yaml.loader import SafeLoader
 import pymongo
 from pymongo import MongoClient
-from bson.objectid import ObjectId
 import requests
 from PIL import Image
 from io import BytesIO
@@ -218,6 +217,13 @@ with column2:
         progress = 100
         st.success("Our Supervisors have completed the inspection.")
         st.info("Check out your listing!!")
+        st.header("")
+        to_listing = st.columns(3)[1].button("Go to my listings", use_container_width = True, type = "primary")
+        if to_listing:
+            st.toast("Redirecting to your listings...")
+            time.sleep(2)
+            switch_page("mylisting")
+
     
     for percent_complete in range(progress):
         time.sleep(0.0001)

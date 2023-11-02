@@ -10,6 +10,7 @@ from pymongo import MongoClient
 import requests
 from io import BytesIO
 from PIL import Image
+import time
 
 # Remove sidebar via CSS and adding header image
 st.markdown(
@@ -129,5 +130,10 @@ else:
                     inspect = st.button(label = "Start Inspection", key = button_key, use_container_width = True, type = "primary")
                     i = i + 1
                     if inspect:
+                        filter = {'_id' : car['_id']}
+                        update = { '$set' : {"Inspectionstatus" : "Inspection underway"}}
+                        listings.update_one(filter, update)
                         st.session_state['car_under_supervision'] = car
+                        st.toast("Redirecting to continue Inspection")
+                        time.sleep(1)
                         switch_page('interiorfeatures')

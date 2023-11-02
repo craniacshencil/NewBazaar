@@ -129,7 +129,7 @@ css_styles="""
     }
     """,
 ):
-    st.subheader("Select the features available in the car: ")
+    st.subheader("Select the Exterior features available in the car: ")
     exterior_features = ['adjustable head lights', 'fog lights front', 'fog lights rear', 'power adjustable exterior rear view mirror', 'electric folding rear view mirror',
                      'rain sensing wiper', 'rear window wiper', 'rear window washer', 'rear window defogger', 'alloy wheels', 'integrated antenna', 'rear spoiler',
                      'roof carrier', 'sun roof', 'moon roof', 'outside rear view mirror turn indicators', 'chrome grille', 'chrome garnish',
@@ -154,7 +154,6 @@ if confirm:
         selected.append(box)
     true_vals = [feature.capitalize() for feature in exterior_features if checkboxes[exterior_features.index(feature)] == True]
     st.session_state['exterior_features'] = true_vals
-    st.write(st.session_state.exterior_features)
     st.toast("Exterior features recorded successfully")
     time.sleep(1)
     st.toast("Redirecting to Inspect Comfort Features")

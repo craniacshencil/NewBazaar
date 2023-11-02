@@ -129,7 +129,7 @@ css_styles="""
     }
     """,
 ):
-    st.subheader("Select the features available in the car: ")
+    st.subheader("Select the Comfort features available in the car: ")
     comfort_features = ['power steering', 'power windows front', 'power windows rear', 'air quality control', 'remote trunk opener', 'low fuel warning light',
                     'accessory power outlet', 'trunk light', 'vanity mirror', 'rear reading lamp', 'rear seat headrest', 'rear seat centre arm rest',
                     'height adjustable front seat belts', 'cup holders front', 'cup holders rear', 'seat lumbar support', 'multifunction steering wheel',
@@ -157,7 +157,6 @@ if confirm:
         selected.append(box)
     true_vals = [feature.capitalize() for feature in comfort_features if checkboxes[comfort_features.index(feature)] == True]
     st.session_state['comfort_features'] = true_vals
-    st.write(st.session_state.comfort_features)
     st.toast("Comfort features recorded successfully")
     time.sleep(1)
     st.toast("Redirecting to Inspect Safety Features")

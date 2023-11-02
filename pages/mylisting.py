@@ -1,3 +1,4 @@
+import time
 import streamlit as st
 import streamlit_authenticator as stauth
 import yaml
@@ -89,6 +90,7 @@ cols = [col1, col2, col3]
 i = 0
 for car in cars:
     button_key = f"button_{i}"
+    button_key2 = f"button2_{i}"
     carbrand = car.get("Brand").capitalize()
     carmodel = car.get("Model").capitalize()
     carmyear = car.get("Myear")
@@ -114,14 +116,29 @@ for car in cars:
                 image = display_images[i]
                 st.image(image, use_column_width = "always")
                 st.markdown(f"#### {carmyear} {carbrand} {carmodel} {carvariant}")
-                st.caption(f"{carfuel} · {cartransmission} · {int(car['Kms'] / 1e3)}k kms · by {car['Seller']}")
-            col1, col2 = st.columns([0.6, 0.4])
+                st.caption(f"{carfuel} · {cartransmission} · {int(car['Kms'] / 1e3)}k kms")
+            col1, col2, col3, col4 = st.columns([0.35, 0.12, 0.15, 0.28], gap = "small")
             with col1:
                 st.markdown(f"### ₹{carprice} Lakh")
                 st.write("")
             with col2:
+                st.empty()
+                if(car['Inspectionstatus'] == "Inspection Successful"):
+                    approved = '<h4 style="font-family:sans-serif; color:LightGreen;">(✅︎)</h4>'
+                    st.markdown(approved, unsafe_allow_html = True)
+            with col3:
+                view = st.button(label = "View", key = button_key2, use_container_width = True, type = "primary")
+                if view:
+                    st.session_state['car'] = car
+                    st.toast("Redirecting to your listing")
+                    time.sleep(2)
+                    switch_page('detailedlisting')
+            with col4:
                 cancel = st.button(label = "Delete Listing", key = button_key, use_container_width = True, type = "primary")
                 st.session_state['deletedcar'] = car
                 i = i + 1
                 if cancel:
+                    st.toast("Redirecting to delete listing....")
+                    time.sleep(2)
                     switch_page('deletelisting')
+                

@@ -182,6 +182,47 @@ with stylable_container(
     my_grid.text_input(label = "Valve Configuration", value = valve_config, disabled = True)
     my_grid.text_input(label = "Kerb Weight", value = f"{str(int(kerb_wt))}", disabled = True)
 
+if len(car.keys()) > 26:
+    interiorfeatures = car['Interiorfeatures']
+    exteriorfeatures = car['Exteriorfeatures']
+    comfortfeatures = car['Comfortfeatures']
+    safetyfeatures = car['Safetyfeatures']
+
+    def local_css(file_name):
+        with open(file_name) as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+    local_css("styles.css")
+
+    with st.expander("Interior Features"):
+        st.header("")
+        col1, col2, col3 = st.columns(3)
+        cols = [col1, col2, col3]
+        for i, feat in enumerate(interiorfeatures):
+            with cols[i % 3]:
+                st.markdown(f"##### · {feat}")
+with st.expander("Exterior Features"):
+        st.header("")
+        col1, col2, col3 = st.columns(3)
+        cols = [col1, col2, col3]
+        for i, feat in enumerate(exteriorfeatures):
+            with cols[i % 3]:
+                st.markdown(f"##### · {feat}")
+with st.expander("Comfort Features"):
+        st.header("")
+        col1, col2, col3 = st.columns(3)
+        cols = [col1, col2, col3]
+        for i, feat in enumerate(comfortfeatures):
+            with cols[i % 3]:
+                st.markdown(f"##### · {feat}")
+with st.expander("Safety Features"):
+        st.header("")
+        col1, col2, col3 = st.columns(3)
+        cols = [col1, col2, col3]
+        for i, feat in enumerate(safetyfeatures):
+            with cols[i % 3]:
+                st.markdown(f"##### · {feat}")
+
 #Go Back to the listings page
 back = st.columns(5)[2].button("Back to listings")
 if(back):

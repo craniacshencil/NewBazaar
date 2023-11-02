@@ -74,7 +74,6 @@ listings = db.post
 
 #Content
 st.header("Listings", divider = "red")
-lmargin, col1, col2, col3, rmargin = st.columns([0.075, 0.25, 0.25, 0.25, 0.075])
 
 #Adding a session state to transfer information
 st.session_state['car'] = None
@@ -89,6 +88,8 @@ for url in display_images_urls:
         display_image = Image.open(BytesIO(response.content))
         display_images.append(display_image)
 
+#Container Creation
+col1, col2, col3 = st.columns(3)
 cols = [col1, col2, col3]
 i = 0
 for car in cars:
@@ -118,16 +119,22 @@ for car in cars:
                 st.image(display_images[i], use_column_width = "always")
                 st.markdown(f"#### {carmyear} {carbrand} {carmodel} {carvariant}")
                 st.caption(f"{carfuel} · {cartransmission} · {int(car['Kms'] / 1e3)}k kms · by {car['Seller']}")
-            col1, col2 = st.columns([0.7, 0.3])
+            col1, col2, col3 = st.columns([0.44, 0.36, 0.2])
             with col1:
                 st.markdown(f"### ₹{carprice} Lakh")
                 st.write("")
             with col2:
+                st.caption("")
+                if(car['Inspectionstatus'] == "Inspection Successful"):
+                    approved = '<h5 style="font-family:sans-serif; color:LightGreen;">(Approved✓)</h5>'
+                    st.markdown(approved, unsafe_allow_html = True)
+            with col3:
                 view = st.button(label = "View", key = button_key, use_container_width = True, type = "primary")
                 i = i + 1
                 if view:
                     st.session_state['car'] = car
                     switch_page('detailedlisting')
+            
        
     
 

@@ -58,9 +58,6 @@ nav_bar = option_menu(None, ["Inspection Approval", "Ban Users"],
 if nav_bar == "Ban Users":
     switch_page("banuser")
 
-#Session states
-if 'note_filled' not in st.session_state:
-    st.session_state['note_filled'] = False
 #Header text
 st.header("Admin Approval", divider = "red")
 
@@ -101,10 +98,7 @@ if(len(cars) == 0):
 
 else:
     i = 0
-    for car in cars:
-            def notefilled():
-                st.session_state['note_filled'] = car.get('_id')
-            
+    for car in cars:            
             approval_request = appointments.find_one({"id_in_post" : car.get("_id")})
             with stylable_container(
             key="container_with_border",
@@ -156,11 +150,9 @@ else:
                             st.toast("Admin Approval Granted!")
                         
                         if verdict == 'Disapprove':
-                            if st.session_state.note_filled == car.get('_id'):
-                                filter = {'_id' : car.get('_id')}
-                                update = {'$set' : {"Inspectionstatus" : "Admin Approval Denied"}}
-                                listings.update_one(filter, update)
-                                st.toast("Admin approval Denied")
-                            else:
-                                st.toast("Fill the Admin's note")     
+                            filter = {'_id' : car.get('_id')}
+                            update = {'$set' : {"Inspectionstatus" : "Admin Approval Denied"}}
+                            listings.update_one(filter, update)
+                            appointments.delete_one({"id_in_post" : car['_id']})
+                            st.toast("Admin approval Denied")   
             st.divider()

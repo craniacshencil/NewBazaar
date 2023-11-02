@@ -140,7 +140,7 @@ css_styles="""
     }
     """,
 ):
-    st.subheader("Select the features available in the car: ")
+    st.subheader("Select the Interior features available in the car: ")
     interior_features = ['air conditioner', 'adjustable steering', 'digital odometer', 'tachometer', 'electronic multi tripmeter', 'leather seats',
                         'fabric upholstery', 'leather steering wheel', 'glove compartment', 'digital clock', 'outside temperature display', 'cigarette lighter',
                         'rear folding table', 'driving experience control eco', 'height adjustable driver seat', 'ventilated seats', 'dual tone dashboard',
