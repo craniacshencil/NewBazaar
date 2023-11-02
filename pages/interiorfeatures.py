@@ -57,8 +57,10 @@ db = client.carbazaar
 appointments = db.appointment
 #Header Text
 st.header("Interior features <1/5>", divider = "red")
+st.header("")
 car = st.session_state['car_under_supervision']
 st.session_state['interior_features'] = "Not set"
+st.session_state['carinfo'] = "Not set"
 
 #Fetching the display image
 url = car['Displayimage']
@@ -68,70 +70,44 @@ if response.status_code == 200:
 
 #Content
 with stylable_container(
-            key="container_with_border",
-            css_styles="""
-                {
-                    border: 1px solid rgba(255, 255, 255, 1);
-                    border-radius: 1rem;
-                    padding: calc(1em - 1px)
-                }
-                """,
-            ):
-                appointment = appointments.find_one({"id_in_post" : car['_id']})
-                carbrand = car.get("Brand").capitalize()
-                carmodel = car.get("Model").capitalize()
-                carmyear = car.get("Myear")
-                carfuel = car.get("Fueltype").capitalize()
-                cartransmission = car.get("Transmission").capitalize()
-                carvariant = car.get("Variant").capitalize()
-                carkms = car.get("Kms")
-                carprice = car.get("Priceinlakh")
+key="container_with_border",
+css_styles="""
+    {
+        border: 1px solid rgba(255, 255, 255, 1);
+        border-radius: 1rem;
+        padding: calc(1em - 1px)
+    }
+    """,
+):
+    appointment = appointments.find_one({"id_in_post" : car['_id']})
+    carbrand = car.get("Brand").capitalize()
+    carmodel = car.get("Model").capitalize()
+    carmyear = car.get("Myear")
+    carfuel = car.get("Fueltype").capitalize()
+    cartransmission = car.get("Transmission").capitalize()
+    carvariant = car.get("Variant").capitalize()
+    carkms = car.get("Kms")
+    carprice = car.get("Priceinlakh")
 
-                col1, col2, col3 = st.columns([3, 5, 3])
-                
-                with col1:
-                    st.image(display_image)
-                with col2:
-                    margin, col = st.columns([0.1, 0.9])
-                    with col:
-                        st.header("")
-                        st.header("")
-                        st.markdown(f"### {carmyear} {carbrand} {carmodel} {carvariant}")
-                        st.markdown(f"#### {carfuel} · {cartransmission} · {int(car['Kms'] / 1e3)}k kms")
+    col1, col2, col3 = st.columns([3, 5, 3])
+    
+    with col1:
+        st.image(display_image)
+    with col2:
+        margin, col = st.columns([0.1, 0.9])
+        with col:
+            st.header("")
+            st.header("")
+            st.markdown(f"### {carmyear} {carbrand} {carmodel} {carvariant}")
+            st.markdown(f"#### {carfuel} · {cartransmission} · {int(car['Kms'] / 1e3)}k kms")
 
-                with col3:
-                    st.subheader("")
-                    st.write("")
-                    st.write("")
-                    st.markdown("#### Inspection date: " + appointment['Inspection date'])
-                    st.markdown("#### Inspection time: " + appointment['Inspection time'])
+    with col3:
+        st.subheader("")
+        st.write("")
+        st.write("")
+        st.markdown("#### Inspection date: " + appointment['Inspection date'])
+        st.markdown("#### Inspection time: " + appointment['Inspection time'])
 st.divider()
-
-
-st.subheader("Select the features available in the car: ")
-interior_features = ['air conditioner', 'adjustable steering', 'digital odometer', 'tachometer', 'electronic multi tripmeter', 'leather seats',
-                     'fabric upholstery', 'leather steering wheel', 'glove compartment', 'digital clock', 'outside temperature display', 'cigarette lighter',
-                     'rear folding table', 'driving experience control eco', 'height adjustable driver seat', 'ventilated seats', 'dual tone dashboard',
-                     'leather wrap gear shift selector']
-col1, col2, col3 = st.columns(3)
-collist = [col1, col2, col3]
-i = 0
-names = ['one', 'two']
-checkboxes = []
-for i, name in enumerate(interior_features):
-    key = f"checkbox_{i}"
-    checkbox = st.checkbox(label = name.capitalize(), key = key)
-    checkboxes.append(checkbox)
-
-selected = []
-confirm = st.columns(3)[1].button("Confirm", use_container_width = True)
-if confirm:
-    for box in checkboxes:
-        selected.append(box)
-    true_vals = [name for name in names if checkboxes[names.index(name)] == True]
-    st.session_state['interior_features']
-
-st.write(len(interior_features))
 st.write(" ")
 colored_header(label = "Inspection Timeline", description = "", color_name = "red-70")
 st.write(" ")
@@ -154,5 +130,55 @@ for percent_complete in range(5):
         inspection_progress_bar.progress(percent_complete + 1, text = " ")
 
 st.divider()
+with stylable_container(
+key="container_with_border",
+css_styles="""
+    {
+        border: 1px solid rgba(255, 255, 255, 1);
+        border-radius: 1rem;
+        padding: calc(2em - 1px)
+    }
+    """,
+):
+    st.subheader("Select the features available in the car: ")
+    interior_features = ['air conditioner', 'adjustable steering', 'digital odometer', 'tachometer', 'electronic multi tripmeter', 'leather seats',
+                        'fabric upholstery', 'leather steering wheel', 'glove compartment', 'digital clock', 'outside temperature display', 'cigarette lighter',
+                        'rear folding table', 'driving experience control eco', 'height adjustable driver seat', 'ventilated seats', 'dual tone dashboard',
+                        'leather wrap gear shift selector']
+    col1, col2, col3 = st.columns(3)
+    collist = [col1, col2, col3]
+    i = 0
+    checkboxes = []
+    for i, feat in enumerate(interior_features):
+        with collist[i % 3]:
+            key = f"checkbox_{i}"
+            checkbox = st.checkbox(label = feat.capitalize(), key = key)
+            checkboxes.append(checkbox)
+            i = i + 1
+
+    selected = []
+st.header("")
+
+#Saving details from DB in a dictionary
+car_info = {
+    "Display image" : display_image,
+    "Inspection date" : appointment['Inspection date'],
+    "Inspection time" : appointment['Inspection time']
+}
+st.session_state['carinfo'] = car_info
+
+confirm = st.columns(3)[1].button("Confirm", use_container_width = True, type = "primary")
+if confirm:
+    for box in checkboxes:
+        selected.append(box)
+    true_vals = [feature.capitalize() for feature in interior_features if checkboxes[interior_features.index(feature)] == True]
+    st.session_state['interior_features'] = true_vals
+    st.toast("Interior features recorded successfully")
+    time.sleep(1)
+    st.toast("Redirecting to Inspect Exterior Features")
+    time.sleep(2)
+    switch_page("exteriorfeatures")
+
+
 
      

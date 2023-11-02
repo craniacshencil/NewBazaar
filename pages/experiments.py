@@ -18,3 +18,9 @@ if confirm:
 back = st.columns(2)[1].button("back", use_container_width= True)
 if back:
     switch_page('dashboard')
+
+
+st.write(st.session_state.interior_features)
+bi = st.button("interior features")
+if bi:
+    switch_page("interiorfeatures")
