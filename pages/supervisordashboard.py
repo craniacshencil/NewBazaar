@@ -50,13 +50,6 @@ with column1:
 #Header image and text
 st.columns(3)[1].image("images\\header.png",use_column_width="auto")
 
-#Nav-bar
-# nav_bar = option_menu(None, ["Inspection Approval", "Ban Users"],
-#     icons=["tools", "exclamation-diamond"],
-#     menu_icon="cast", default_index = 1, orientation="horizontal")
-# if nav_bar == "Inspection Approval":
-#     switch_page("adminapproval")
-
 #Header Text
 st.header("Supervisor Dashboard", divider = "red")
 st.session_state['car_under_supervision'] = "No car"
@@ -65,6 +58,7 @@ st.session_state['car_under_supervision'] = "No car"
 client = MongoClient("localhost", 27017)
 db = client.carbazaar
 listings = db.post
+appointments = db.appointment
 cars = list(listings.find({"Inspectionstatus" : "Admin Approval Granted"}))
 
 #Fetching the display images
@@ -98,6 +92,7 @@ else:
     cols = [col1, col2, col3]
     i = 0
     for car in cars:
+        appointment = appointments.find_one({"id_in_post" : car['_id']})
         button_key = f"button_{i}"
         carbrand = car.get("Brand").capitalize()
         carmodel = car.get("Model").capitalize()
@@ -124,6 +119,7 @@ else:
                     st.image(display_images[i], use_column_width = "always")
                     st.markdown(f"#### {carmyear} {carbrand} {carmodel} {carvariant}")
                     st.caption(f"{carfuel} · {cartransmission} · {int(car['Kms'] / 1e3)}k kms · by {car['Seller']}")
+                    st.markdown(f"##### Date: {appointment['Inspection date']} · Time: {appointment['Inspection time']}")
                 col1, col2 = st.columns([0.5, 0.5])
                 with col1:
                     st.markdown(f"## ₹{carprice} Lakh")
