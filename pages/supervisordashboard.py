@@ -122,7 +122,7 @@ else:
                     st.markdown(f"##### Date: {appointment['Inspection date']} · Time: {appointment['Inspection time']}")
                 col1, col2 = st.columns([0.5, 0.5])
                 with col1:
-                    st.markdown(f"## ₹{carprice} Lakh")
+                    st.markdown(f"### ₹{carprice} Lakh")
                     st.write("")
                 with col2:
                     st.write("")

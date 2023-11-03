@@ -57,7 +57,6 @@ with column1:
     if st.session_state["authentication_status"]:
         authenticator.logout(f'{name} Logout', 'main', key='unique_key')
 image = Image.open("images\\header.png")
-image = image.resize((300, int(300 * image.height / image.width)))
 st.columns(3)[1].image(image)
 colored_header(
 label = "Selected Listing: ",
@@ -119,7 +118,7 @@ if(wishlist):
     client = MongoClient("localhost", 27017)
     db = client.carbazaar
     wishlist_collection = db.wishlist
-    wishlist_entries = list(db.wishlist.find())
+    wishlist_entries = list(db.wishlist.find({"User" : name}))
     wishlist_doc = {
         "User" : st.session_state['name'],
         "id_in_post" : car['_id']
@@ -133,7 +132,7 @@ if(wishlist):
             break
     if flag == 1:
         st.toast("Wishlisted Sucessfully")
-        wishlist_collection.insert_one(wishlist_doc).inserted_id
+        wishlist_collection.insert_one(wishlist_doc)
 
 #Switching to the loan page
 if(emi):
@@ -182,7 +181,7 @@ with stylable_container(
     my_grid.text_input(label = "Valve Configuration", value = valve_config, disabled = True)
     my_grid.text_input(label = "Kerb Weight", value = f"{str(int(kerb_wt))}", disabled = True)
 
-if len(car.keys()) > 26:
+if len(car.keys()) > 27:
     interiorfeatures = car['Interiorfeatures']
     exteriorfeatures = car['Exteriorfeatures']
     comfortfeatures = car['Comfortfeatures']
@@ -201,27 +200,27 @@ if len(car.keys()) > 26:
         for i, feat in enumerate(interiorfeatures):
             with cols[i % 3]:
                 st.markdown(f"##### · {feat}")
-with st.expander("Exterior Features"):
-        st.header("")
-        col1, col2, col3 = st.columns(3)
-        cols = [col1, col2, col3]
-        for i, feat in enumerate(exteriorfeatures):
-            with cols[i % 3]:
-                st.markdown(f"##### · {feat}")
-with st.expander("Comfort Features"):
-        st.header("")
-        col1, col2, col3 = st.columns(3)
-        cols = [col1, col2, col3]
-        for i, feat in enumerate(comfortfeatures):
-            with cols[i % 3]:
-                st.markdown(f"##### · {feat}")
-with st.expander("Safety Features"):
-        st.header("")
-        col1, col2, col3 = st.columns(3)
-        cols = [col1, col2, col3]
-        for i, feat in enumerate(safetyfeatures):
-            with cols[i % 3]:
-                st.markdown(f"##### · {feat}")
+    with st.expander("Exterior Features"):
+            st.header("")
+            col1, col2, col3 = st.columns(3)
+            cols = [col1, col2, col3]
+            for i, feat in enumerate(exteriorfeatures):
+                with cols[i % 3]:
+                    st.markdown(f"##### · {feat}")
+    with st.expander("Comfort Features"):
+            st.header("")
+            col1, col2, col3 = st.columns(3)
+            cols = [col1, col2, col3]
+            for i, feat in enumerate(comfortfeatures):
+                with cols[i % 3]:
+                    st.markdown(f"##### · {feat}")
+    with st.expander("Safety Features"):
+            st.header("")
+            col1, col2, col3 = st.columns(3)
+            cols = [col1, col2, col3]
+            for i, feat in enumerate(safetyfeatures):
+                with cols[i % 3]:
+                    st.markdown(f"##### · {feat}")
 
 #Go Back to the listings page
 back = st.columns(5)[2].button("Back to listings")

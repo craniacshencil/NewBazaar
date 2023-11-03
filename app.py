@@ -3,6 +3,7 @@ from streamlit_option_menu import option_menu
 from streamlit_extras.switch_page_button import switch_page
 import base64
 from st_clickable_images import clickable_images
+import os
 # Collapse sidebar on start, remove it and header image
 st.set_page_config(initial_sidebar_state="collapsed",layout="wide")
 st.markdown(
@@ -16,6 +17,12 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.columns(3)[1].image("images/header.png",use_column_width="auto")
+
+#Checking for temp_storage folder
+try:
+    os.mkdir("temp_storage")
+except OSError as error: 
+    print("[IGNORE] File already exists")
 
 #Adding NavBar
 nav_bar = option_menu(None, ["Home", "Login", "Register"],

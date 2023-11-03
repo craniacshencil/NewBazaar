@@ -248,7 +248,7 @@ if(finish):
     }
 
     listings = db.post
-    listings.insert_one(post).inserted_id
+    listings.insert_one(post)
     st.success("Your Car has been successfully listed")
     st.toast("Redirecting to dashboard in 3 sec..")
     time.sleep(3)
