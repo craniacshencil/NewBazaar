@@ -4,8 +4,9 @@ from streamlit_extras.switch_page_button import switch_page
 import base64
 from st_clickable_images import clickable_images
 import os
+
 # Collapse sidebar on start, remove it and header image
-st.set_page_config(initial_sidebar_state="collapsed",layout="wide")
+st.set_page_config(initial_sidebar_state="collapsed", layout="wide")
 st.markdown(
     """
 <style>
@@ -16,26 +17,31 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-st.columns(3)[1].image("images/header.png",use_column_width="auto")
+st.columns(3)[1].image("images/header.png", use_column_width="auto")
 
-#Checking for temp_storage folder
+# Checking for temp_storage folder
 try:
     os.mkdir("temp_storage")
-except OSError as error: 
+except OSError:
     print("[IGNORE] File already exists")
 
-#Adding NavBar
-nav_bar = option_menu(None, ["Home", "Login", "Register"],
-    icons=['house', 'cloud-upload', "list-task"],
-    menu_icon="cast", default_index=0, orientation="horizontal")
+# Adding NavBar
+nav_bar = option_menu(
+    None,
+    ["Home", "Login", "Register"],
+    icons=["house", "cloud-upload", "list-task"],
+    menu_icon="cast",
+    default_index=0,
+    orientation="horizontal",
+)
 
 if nav_bar == "Login":
-	switch_page("login")
+    switch_page("login")
 
 if nav_bar == "Register":
-	switch_page("register")
-	
-#Content
+    switch_page("register")
+
+# Content
 # col1, col2 = st.columns(2,gap="small")
 # with col1:
 # 	st.image("images/buy_now.png")
@@ -52,12 +58,17 @@ with col2:
 
     clicked = clickable_images(
         images,
-        titles = ["buy", "sell"],
-        div_style = {"display": "block", "justify-content": "flex-start", "flex-wrap": "nowrap", "width" : "1200px"},
-        img_style = {"margin": "1px", "height": "590px", "width" : "590px"},
+        titles=["buy", "sell"],
+        div_style={
+            "display": "block",
+            "justify-content": "flex-start",
+            "flex-wrap": "nowrap",
+            "width": "1200px",
+        },
+        img_style={"margin": "1px", "height": "590px", "width": "590px"},
     )
 
     if clicked == 0:
-          switch_page("listings")
+        switch_page("listings")
     if clicked == 1:
-          switch_page("valuation")
+        switch_page("valuation")

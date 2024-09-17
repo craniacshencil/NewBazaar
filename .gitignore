@@ -1,5 +1,7 @@
+.env
 ML/catboost_info
 config.yaml
+temp_storage
 ML/catboost_info/catboost_training.json
 ML/catboost_info/learn_error.tsv
 ML/catboost_info/test_error.tsv
@@ -16,3 +18,4 @@ ML/catboost_info/tmp/cat_feature_index.b406ca76-124dcf0c-41d6744a-86e48a12.tmp
 ML/catboost_info/tmp/cat_feature_index.b844c3a7-60ac4e99-69d02136-c043931.tmp
 ML/catboost_info/tmp/cat_feature_index.c52a627a-a64c9a1f-ca8d69bc-c248c0ea.tmp
 ML/catboost_info/tmp/cat_feature_index.cdb9feca-f62d713f-64af1785-b1c2106a.tmp
+

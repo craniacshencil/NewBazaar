@@ -1,3 +1,4 @@
+from yaml.loader import SafeLoader
 import streamlit as st
 import streamlit_authenticator as stauth
 import yaml
@@ -15,31 +16,31 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-from yaml.loader import SafeLoader
-with open('config.yaml') as file:
+
+with open("config.yaml") as file:
     config = yaml.load(file, Loader=SafeLoader)
 
 authenticator = stauth.Authenticate(
-    config['credentials'],
-    config['cookie']['name'],
-    config['cookie']['key'],
-    config['cookie']['expiry_days'],
-    config['preauthorized']
+    config["credentials"],
+    config["cookie"]["name"],
+    config["cookie"]["key"],
+    config["cookie"]["expiry_days"],
+    config["preauthorized"],
 )
 
-st.columns(3)[1].image("images\\header.png",use_column_width="auto")
+st.columns(3)[1].image("images//header.png", use_column_width="auto")
 
 registered_successfully = False
 
 try:
-    if authenticator.register_user('Register user', preauthorization=False):
-        st.success('User registered successfully')
+    if authenticator.register_user("Register user", preauthorization=False):
+        st.success("User registered successfully")
         registered_successfully = True
 except Exception as e:
     st.error(e)
 
 if registered_successfully:
-    with open('config.yaml', 'w') as file:
+    with open("config.yaml", "w") as file:
         yaml.dump(config, file, default_flow_style=False)
     st.toast("Redirecting to login in 3 sec..")
     time.sleep(4)
